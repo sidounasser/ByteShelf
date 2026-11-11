@@ -1,0 +1,26 @@
+# Netlify
+.netlify
+
+# Dependencies
+node_modules/
+
+# Production build
+dist/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Raw clone of upstream repository
+free-programming-books/
+
+# Python cache & database
+__pycache__/
+*.pyc
+*.db
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

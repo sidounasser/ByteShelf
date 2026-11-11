@@ -1,0 +1,3028 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Free Programming Books — Bibliothèque & Espace Membre</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- Google Identity Services SDK (OAuth 2.0 / OpenID Connect) -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <style>
+    /* ==========================================================================
+       LIGHT EDITORIAL DESIGN SYSTEM
+       ========================================================================== */
+    :root {
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-subtle: #f1f5f9;
+      --bg-hover: #e2e8f0;
+      --border: #e2e8f0;
+      --border-strong: #cbd5e1;
+      --text-main: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #64748b;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-light: #eff6ff;
+      --primary-border: #bfdbfe;
+      --indigo: #4f46e5;
+      --emerald: #059669;
+      --amber: #d97706;
+      --rose: #e11d48;
+      --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+      --shadow-sm: 0 4px 12px rgba(15, 23, 42, 0.05);
+      --shadow-md: 0 10px 25px -5px rgba(15, 23, 42, 0.08);
+      --shadow-lg: 0 24px 48px -12px rgba(15, 23, 42, 0.16);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 22px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ==========================================================================
+       TOP NAVBAR
+       ========================================================================== */
+    .navbar {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      padding: 0 1.5rem;
+    }
+
+    .navbar-inner {
+      max-width: 1440px;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.25rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--text-main);
+      flex-shrink: 0;
+    }
+
+    .brand-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+
+    .brand-name {
+      font-size: 1.08rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+    }
+
+    /* Omni Search in Navbar */
+    .nav-search {
+      flex: 1;
+      max-width: 540px;
+      position: relative;
+    }
+
+    .nav-search input {
+      width: 100%;
+      padding: 0.62rem 5.5rem 0.62rem 2.5rem;
+      background: var(--bg-subtle);
+      border: 1.5px solid transparent;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      color: var(--text-main);
+      transition: all 0.2s;
+    }
+
+    .nav-search input:focus {
+      outline: none;
+      background: #fff;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    }
+
+    .nav-search-icon {
+      position: absolute;
+      left: 0.85rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .nav-search-kbd {
+      position: absolute;
+      right: 0.65rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      background: #fff;
+      border: 1px solid var(--border);
+      padding: 2px 6px;
+      border-radius: 5px;
+      pointer-events: none;
+    }
+
+    .nav-search-clear {
+      position: absolute;
+      right: 4rem;
+      top: 50%;
+      transform: translateY(-50%);
+      border: none;
+      background: var(--bg-hover);
+      color: var(--text-secondary);
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+    }
+
+    .nav-search-clear.visible {
+      display: inline-flex;
+    }
+
+    /* Right Nav Actions & Auth Area */
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-shrink: 0;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 0.48rem 0.85rem;
+      border-radius: 9px;
+      font-family: inherit;
+      font-size: 0.84rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.15s;
+    }
+
+    .btn-ghost:hover {
+      background: var(--bg-subtle);
+      border-color: var(--border-strong);
+    }
+
+    .btn-ghost.active-fav {
+      background: #fef3c7;
+      border-color: #f59e0b;
+      color: #b45309;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      border: 1px solid var(--primary);
+      color: #ffffff;
+      padding: 0.5rem 1rem;
+      border-radius: 9px;
+      font-family: inherit;
+      font-size: 0.84rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.15s;
+      box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    /* Logged-in User Pill */
+    .user-menu-wrap {
+      position: relative;
+    }
+
+    .user-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      background: #fff;
+      border: 1px solid var(--border);
+      padding: 0.3rem 0.7rem 0.3rem 0.35rem;
+      border-radius: 999px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--text-main);
+      transition: all 0.15s;
+    }
+
+    .user-pill:hover {
+      border-color: var(--primary);
+      box-shadow: var(--shadow-xs);
+    }
+
+    .user-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #2563eb, #4f46e5);
+      color: #fff;
+      font-size: 0.76rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .user-dropdown {
+      position: absolute;
+      right: 0;
+      top: calc(100% + 8px);
+      width: 240px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: var(--shadow-lg);
+      padding: 0.5rem;
+      display: none;
+      z-index: 150;
+    }
+
+    .user-dropdown.open {
+      display: block;
+    }
+
+    .user-dropdown-header {
+      padding: 0.6rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 0.35rem;
+    }
+
+    .user-dropdown-name {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .user-dropdown-email {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .user-dropdown-item {
+      width: 100%;
+      text-align: left;
+      background: none;
+      border: none;
+      padding: 0.55rem 0.75rem;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.84rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .user-dropdown-item:hover {
+      background: var(--bg-subtle);
+      color: var(--text-main);
+    }
+
+    .user-dropdown-item.danger {
+      color: var(--rose);
+    }
+
+    .user-dropdown-item.danger:hover {
+      background: #fff1f2;
+    }
+
+    /* ==========================================================================
+       HERO BANNER WITH GENERATED EBOOK ILLUSTRATION
+       ========================================================================== */
+    .hero-section {
+      max-width: 1440px;
+      width: 100%;
+      margin: 1.25rem auto 0;
+      padding: 0 1.5rem;
+    }
+
+    .hero-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 1.75rem 2.25rem;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      align-items: center;
+      gap: 2rem;
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      background: var(--primary-light);
+      border: 1px solid var(--primary-border);
+      color: var(--primary);
+      font-size: 0.76rem;
+      font-weight: 700;
+      padding: 4px 11px;
+      border-radius: 999px;
+      margin-bottom: 0.85rem;
+    }
+
+    .hero-title {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      margin-bottom: 0.65rem;
+      color: var(--text-main);
+    }
+
+    .hero-desc {
+      font-size: 0.96rem;
+      color: var(--text-secondary);
+      margin-bottom: 1.25rem;
+      max-width: 560px;
+    }
+
+    .hero-stats-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      align-items: center;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .hero-stat-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .hero-stat-val {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .hero-stat-lbl {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .hero-visual {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-visual img {
+      width: 100%;
+      max-width: 400px;
+      height: 210px;
+      object-fit: cover;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+    }
+
+    /* ==========================================================================
+       WORKSPACE TWO-COLUMN LAYOUT (SIDEBAR + CONTENT)
+       ========================================================================== */
+    .workspace {
+      max-width: 1440px;
+      width: 100%;
+      margin: 1.5rem auto 3rem;
+      padding: 0 1.5rem;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 1.75rem;
+      align-items: start;
+      flex: 1;
+    }
+
+    /* Left Sidebar (Clean vertical navigation, NO horizontal scrollbar) */
+    .sidebar {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.15rem;
+      box-shadow: var(--shadow-xs);
+      position: sticky;
+      top: 84px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      max-height: calc(100vh - 104px);
+      overflow-y: auto;
+    }
+
+    .sidebar::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .sidebar::-webkit-scrollbar-thumb {
+      background: var(--border-strong);
+      border-radius: 99px;
+    }
+
+    .side-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .side-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      padding: 0 0.5rem;
+      margin-bottom: 0.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .side-nav-btn {
+      width: 100%;
+      background: transparent;
+      border: none;
+      padding: 0.52rem 0.65rem;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      text-align: left;
+      transition: all 0.15s;
+    }
+
+    .side-nav-btn:hover {
+      background: var(--bg-subtle);
+      color: var(--text-main);
+    }
+
+    .side-nav-btn.active {
+      background: var(--primary-light);
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .side-nav-left {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .side-count {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      background: var(--bg-subtle);
+      padding: 1px 7px;
+      border-radius: 99px;
+      flex-shrink: 0;
+    }
+
+    .side-nav-btn.active .side-count {
+      background: #dbeafe;
+      color: var(--primary);
+    }
+
+    .side-select {
+      width: 100%;
+      padding: 0.55rem 0.7rem;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--text-main);
+      cursor: pointer;
+      outline: none;
+    }
+
+    .side-select:focus {
+      border-color: var(--primary);
+      background: #fff;
+    }
+
+    .side-cat-search {
+      width: 100%;
+      padding: 0.45rem 0.65rem;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      font-family: inherit;
+      font-size: 0.8rem;
+      color: var(--text-main);
+      margin-bottom: 0.3rem;
+    }
+
+    .side-cat-search:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: #fff;
+    }
+
+    .side-cat-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      max-height: 290px;
+      overflow-y: auto;
+      padding-right: 2px;
+    }
+
+    .side-cat-list::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .side-cat-list::-webkit-scrollbar-thumb {
+      background: var(--border-strong);
+      border-radius: 99px;
+    }
+
+    /* ==========================================================================
+       RIGHT CONTENT AREA (TOOLBAR + CARDS)
+       ========================================================================== */
+    .content-area {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .content-toolbar {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.75rem 1.1rem;
+      margin-bottom: 1.15rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      box-shadow: var(--shadow-xs);
+    }
+
+    .toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+    }
+
+    .active-filter-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: var(--primary-light);
+      border: 1px solid var(--primary-border);
+      color: var(--primary);
+      font-size: 0.76rem;
+      font-weight: 600;
+      padding: 2px 9px;
+      border-radius: 999px;
+    }
+
+    .active-filter-tag button {
+      border: none;
+      background: none;
+      color: inherit;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+
+    .toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .toolbar-select {
+      padding: 0.38rem 0.65rem;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      background: var(--bg-subtle);
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-main);
+      cursor: pointer;
+    }
+
+    /* Cards Grid & List */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+      gap: 1rem;
+    }
+
+    .cards-grid.list-mode {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .book-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.15rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.18s ease;
+      box-shadow: var(--shadow-xs);
+    }
+
+    .book-card:hover {
+      border-color: var(--primary);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .list-mode .book-card {
+      flex-direction: row;
+      align-items: center;
+      padding: 0.85rem 1.15rem;
+      gap: 1rem;
+    }
+
+    .list-mode .book-card-main {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .list-mode .book-card-footer {
+      border-top: none;
+      padding-top: 0;
+      margin-top: 0;
+      flex-shrink: 0;
+    }
+
+    .book-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-bottom: 0.65rem;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      align-items: center;
+    }
+
+    .tag {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+
+    .tag-cat {
+      background: #f1f5f9;
+      color: #334155;
+      border: 1px solid #e2e8f0;
+      cursor: pointer;
+    }
+
+    .tag-cat:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+      border-color: var(--primary-border);
+    }
+
+    .tag-pdf { background: #ffe4e6; color: #be123c; }
+    .tag-web { background: #dbeafe; color: #1d4ed8; }
+    .tag-video { background: #fce7f3; color: #be185d; }
+    .tag-epub { background: #d1fae5; color: #047857; }
+    .tag-podcast { background: #f3e8ff; color: #7e22ce; }
+    .tag-inter { background: #fef3c7; color: #b45309; }
+
+    .card-icon-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.2rem;
+    }
+
+    .card-icon-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      transition: all 0.15s;
+    }
+
+    .card-icon-btn:hover {
+      background: var(--bg-subtle);
+      color: var(--text-main);
+    }
+
+    .card-icon-btn.fav-on {
+      color: #f59e0b;
+    }
+
+    .book-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.38;
+      margin-bottom: 0.35rem;
+      word-break: break-word;
+    }
+
+    .book-title a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .book-title a:hover {
+      color: var(--primary);
+    }
+
+    .book-author {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .book-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 0.9rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border);
+      gap: 0.5rem;
+    }
+
+    .book-domain {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 170px;
+    }
+
+    .btn-read {
+      background: var(--primary-light);
+      color: var(--primary);
+      border: 1px solid var(--primary-border);
+      padding: 0.4rem 0.85rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: all 0.15s;
+    }
+
+    .btn-read:hover {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    /* ==========================================================================
+       AUTHENTICATION MODAL (CLASSIC LOGIN / SIGNUP + OAUTH PROVIDERS)
+       ========================================================================== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.5);
+      backdrop-filter: blur(6px);
+      z-index: 300;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.25rem;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .auth-container {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      max-width: 920px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1.1fr;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .auth-close-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text-secondary);
+      font-size: 1.15rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+
+    .auth-close-btn:hover {
+      background: var(--bg-subtle);
+      color: var(--text-main);
+    }
+
+    /* Auth Left Visual Panel */
+    .auth-aside {
+      background: linear-gradient(160deg, #eff6ff 0%, #eef2ff 50%, #f5f3ff 100%);
+      border-right: 1px solid var(--border);
+      padding: 2.25rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .auth-aside-img {
+      width: 100%;
+      border-radius: 14px;
+      border: 1px solid rgba(37, 99, 235, 0.15);
+      box-shadow: var(--shadow-sm);
+      margin: 1.25rem 0;
+      object-fit: cover;
+      max-height: 220px;
+    }
+
+    .auth-aside h3 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 0.45rem;
+      letter-spacing: -0.02em;
+    }
+
+    .auth-aside p {
+      font-size: 0.86rem;
+      color: var(--text-secondary);
+    }
+
+    .auth-benefits {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .auth-benefits li {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Auth Right Form Panel */
+    .auth-main {
+      padding: 2.25rem 2.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .auth-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: var(--bg-subtle);
+      padding: 4px;
+      border-radius: 10px;
+      margin-bottom: 1.35rem;
+    }
+
+    .auth-tab {
+      border: none;
+      background: transparent;
+      padding: 0.55rem;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .auth-tab.active {
+      background: #ffffff;
+      color: var(--text-main);
+      box-shadow: var(--shadow-xs);
+    }
+
+    .auth-header-text {
+      margin-bottom: 1.15rem;
+    }
+
+    .auth-header-text h2 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.25rem;
+    }
+
+    .auth-header-text p {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    /* Classic Social Login Buttons Grid */
+    .oauth-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem;
+      margin-bottom: 1.15rem;
+    }
+
+    .oauth-btn {
+      background: #ffffff;
+      border: 1px solid var(--border-strong);
+      border-radius: 9px;
+      padding: 0.6rem 0.75rem;
+      font-family: inherit;
+      font-size: 0.83rem;
+      font-weight: 600;
+      color: var(--text-main);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.55rem;
+      transition: all 0.15s;
+    }
+
+    .oauth-btn:hover {
+      background: var(--bg-subtle);
+      border-color: var(--text-muted);
+      transform: translateY(-1px);
+    }
+
+    .auth-divider {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--text-muted);
+      font-size: 0.76rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 1.15rem;
+    }
+
+    .auth-divider::before,
+    .auth-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* Form Fields */
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .form-label-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .form-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .forgot-link {
+      font-size: 0.78rem;
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+
+    .forgot-link:hover {
+      text-decoration: underline;
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.65rem 0.85rem;
+      background: var(--bg-subtle);
+      border: 1.5px solid var(--border);
+      border-radius: 9px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      color: var(--text-main);
+      transition: all 0.15s;
+    }
+
+    .form-input:focus {
+      outline: none;
+      background: #ffffff;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    .pwd-toggle {
+      position: absolute;
+      right: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+
+    .checkbox-row input {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--primary);
+    }
+
+    .auth-submit-btn {
+      width: 100%;
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      padding: 0.72rem;
+      border-radius: 9px;
+      font-family: inherit;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s;
+      margin-top: 0.25rem;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+
+    .auth-submit-btn:hover {
+      background: var(--primary-hover);
+    }
+
+    /* ==========================================================================
+       ALL 53 LANGUAGES MODAL
+       ========================================================================== */
+    .lang-modal-box {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      max-width: 880px;
+      width: 100%;
+      max-height: 84vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+
+    .lang-modal-head {
+      padding: 1.15rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .lang-modal-head h3 {
+      font-size: 1.12rem;
+      font-weight: 800;
+    }
+
+    .lang-modal-search {
+      padding: 0.85rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .lang-modal-search input {
+      width: 100%;
+      padding: 0.65rem 0.95rem;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+
+    .lang-modal-grid {
+      padding: 1.15rem 1.5rem;
+      overflow-y: auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(195px, 1fr));
+      gap: 0.6rem;
+    }
+
+    .lang-item-btn {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.65rem 0.8rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      text-align: left;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+
+    .lang-item-btn:hover {
+      border-color: var(--primary);
+      background: #fff;
+    }
+
+    .lang-item-btn.active {
+      background: var(--primary-light);
+      border-color: var(--primary);
+    }
+
+    /* Load more, Empty, Toast, Footer */
+    .load-more-wrap {
+      text-align: center;
+      margin: 2rem 0 1rem;
+    }
+
+    .empty-state {
+      background: #ffffff;
+      border: 1px dashed var(--border-strong);
+      border-radius: var(--radius-lg);
+      padding: 3rem 1.5rem;
+      text-align: center;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      background: #0f172a;
+      color: #ffffff;
+      padding: 0.75rem 1.15rem;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      box-shadow: var(--shadow-lg);
+      z-index: 400;
+      opacity: 0;
+      transform: translateY(12px);
+      pointer-events: none;
+      transition: all 0.22s ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      background: #ffffff;
+      padding: 1.5rem;
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    footer a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    @media (max-width: 980px) {
+      .hero-card {
+        grid-template-columns: 1fr;
+      }
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        position: static;
+        max-height: none;
+      }
+      .auth-container {
+        grid-template-columns: 1fr;
+      }
+      .auth-aside {
+        display: none;
+      }
+    }
+
+    /* ==========================================================================
+       PASSWORD STRENGTH METER & REAL-TIME RULES
+       ========================================================================== */
+    .pwd-strength-container {
+      margin-top: 0.45rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .pwd-strength-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.74rem;
+      font-weight: 600;
+    }
+
+    .pwd-strength-bar {
+      height: 6px;
+      background: var(--bg-hover);
+      border-radius: 99px;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .pwd-strength-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 99px;
+      transition: width 0.25s ease, background-color 0.25s ease;
+    }
+
+    .pwd-rules-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.3rem 0.5rem;
+      margin-top: 0.25rem;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .pwd-rule {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: color 0.15s;
+    }
+
+    .pwd-rule.valid {
+      color: var(--emerald);
+      font-weight: 600;
+    }
+
+    .pwd-match-msg {
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-top: 0.2rem;
+      display: none;
+    }
+
+    .pwd-match-msg.valid {
+      display: block;
+      color: var(--emerald);
+    }
+
+    .pwd-match-msg.invalid {
+      display: block;
+      color: var(--rose);
+    }
+
+    /* ==========================================================================
+       EMAIL OTP VERIFICATION VIEW
+       ========================================================================== */
+    .otp-view-box {
+      display: flex;
+      flex-direction: column;
+      gap: 1.15rem;
+    }
+
+    .simulated-inbox-banner {
+      background: #eff6ff;
+      border: 1.5px dashed #93c5fd;
+      border-radius: 12px;
+      padding: 0.85rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .simulated-inbox-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .simulated-inbox-body {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .simulated-otp-display {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      color: var(--primary);
+      background: #ffffff;
+      padding: 4px 14px;
+      border-radius: 8px;
+      border: 1px solid #bfdbfe;
+      box-shadow: var(--shadow-xs);
+    }
+
+    .otp-inputs-row {
+      display: flex;
+      justify-content: center;
+      gap: 0.55rem;
+      margin: 0.4rem 0;
+    }
+
+    .otp-digit-box {
+      width: 48px;
+      height: 56px;
+      text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.45rem;
+      font-weight: 800;
+      background: var(--bg-subtle);
+      border: 1.5px solid var(--border);
+      border-radius: 11px;
+      color: var(--text-main);
+      transition: all 0.15s;
+    }
+
+    .otp-digit-box:focus {
+      outline: none;
+      background: #ffffff;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3.5px rgba(37, 99, 235, 0.15);
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- TOP NAVBAR -->
+  <header class="navbar">
+    <div class="navbar-inner">
+      <a href="#" class="brand" onclick="resetAllFilters(); return false;">
+        <div class="brand-icon">
+          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+          </svg>
+        </div>
+        <span class="brand-name">Free Programming Books</span>
+      </a>
+
+      <!-- Omni Search Bar -->
+      <div class="nav-search">
+        <svg class="nav-search-icon" width="17" height="17" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+        <input type="text" id="searchInput" placeholder="Rechercher un livre, cours, langage ou auteur (Python, C++, Linux, IA)..." autocomplete="off">
+        <button class="nav-search-clear" id="clearSearchBtn" onclick="clearSearch()">&times;</button>
+        <span class="nav-search-kbd">Ctrl+K</span>
+      </div>
+
+      <!-- Right Actions: Languages, Favorites, Account Auth -->
+      <div class="nav-actions">
+        <button class="btn-ghost" onclick="openLangModal()" title="Choisir parmi les 53 langues">
+          <span id="navLangFlag">🇫🇷</span>
+          <span id="navLangName">Français</span>
+          <span style="font-size: 0.7rem; color: var(--text-muted);">▼</span>
+        </button>
+
+        <button class="btn-ghost" id="favFilterBtn" onclick="toggleFavoritesMode()">
+          <span>⭐</span>
+          <span id="favCountText">Favoris (0)</span>
+        </button>
+
+        <!-- Logged Out Buttons -->
+        <div id="authGuestActions" style="display: flex; align-items: center; gap: 0.5rem;">
+          <button class="btn-ghost" onclick="openAuthModal('login')">Se connecter</button>
+          <button class="btn-primary" onclick="openAuthModal('signup')">Créer un compte</button>
+        </div>
+
+        <!-- Logged In User Profile Menu -->
+        <div class="user-menu-wrap" id="authUserMenu" style="display: none;">
+          <button class="user-pill" onclick="toggleUserDropdown(event)">
+            <div class="user-avatar" id="userAvatarInitials">U</div>
+            <span id="userDisplayName">Utilisateur</span>
+            <span style="font-size: 0.68rem; color: var(--text-muted);">▼</span>
+          </button>
+
+          <div class="user-dropdown" id="userDropdown">
+            <div class="user-dropdown-header">
+              <div class="user-dropdown-name" id="dropdownUserName">Utilisateur</div>
+              <div class="user-dropdown-email" id="dropdownUserEmail">email@exemple.com</div>
+            </div>
+            <button class="user-dropdown-item" onclick="toggleFavoritesMode(); closeUserDropdown();">
+              <span>⭐</span> <span>Mes livres favoris</span>
+            </button>
+            <button class="user-dropdown-item" onclick="openLangModal(); closeUserDropdown();">
+              <span>🌍</span> <span>Changer de langue (53)</span>
+            </button>
+            <button class="user-dropdown-item danger" onclick="logoutUser()">
+              <span>🚪</span> <span>Se déconnecter</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO BANNER WITH CUSTOM GENERATED EBOOK ILLUSTRATION -->
+  <section class="hero-section">
+    <div class="hero-card">
+      <div>
+        <div class="hero-badge">
+          <span>📚</span>
+          <span>Bibliothèque Open-Source Mondiale</span>
+        </div>
+        <h1 class="hero-title">Apprenez à coder avec les meilleurs ebooks et cours gratuits</h1>
+        <p class="hero-desc">
+          Explorez plus de 10 700 livres, cours vidéo, podcasts et exercices interactifs dans 53 langues. Créez votre compte pour sauvegarder vos lectures favorites.
+        </p>
+
+        <div class="hero-stats-row">
+          <div class="hero-stat-item">
+            <span class="hero-stat-val" id="heroTotalResources">10 740</span>
+            <span class="hero-stat-lbl">Ressources gratuites</span>
+          </div>
+          <div class="hero-stat-item">
+            <span class="hero-stat-val">53</span>
+            <span class="hero-stat-lbl">Langues disponibles</span>
+          </div>
+          <div class="hero-stat-item">
+            <span class="hero-stat-val" id="heroCurrentLangCount">164</span>
+            <span class="hero-stat-lbl" id="heroCurrentLangLabel">En Français</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <img src="hero-ebook.jpg" alt="Illustration Bibliothèque Ebooks Programmation">
+      </div>
+    </div>
+  </section>
+
+  <!-- TWO-COLUMN WORKSPACE -->
+  <div class="workspace">
+
+    <!-- LEFT SIDEBAR (Clean Vertical Navigation & Filters) -->
+    <aside class="sidebar">
+      <!-- Resource Types -->
+      <div class="side-group">
+        <div class="side-label">Type de contenu</div>
+        <button class="side-nav-btn active" data-type="all" onclick="setTypeFilter('all')">
+          <span class="side-nav-left"><span>🗂️</span> <span>Toutes les ressources</span></span>
+          <span class="side-count" id="countAll">0</span>
+        </button>
+        <button class="side-nav-btn" data-type="Livre" onclick="setTypeFilter('Livre')">
+          <span class="side-nav-left"><span>📖</span> <span>Livres & Ebooks</span></span>
+          <span class="side-count" id="countBooks">0</span>
+        </button>
+        <button class="side-nav-btn" data-type="Cours" onclick="setTypeFilter('Cours')">
+          <span class="side-nav-left"><span>🎓</span> <span>Cours & Vidéos</span></span>
+          <span class="side-count" id="countCourses">0</span>
+        </button>
+        <button class="side-nav-btn" data-type="Podcast" onclick="setTypeFilter('Podcast')">
+          <span class="side-nav-left"><span>🎙️</span> <span>Podcasts & Audio</span></span>
+          <span class="side-count" id="countPodcasts">0</span>
+        </button>
+        <button class="side-nav-btn" data-type="Interactif" onclick="setTypeFilter('Interactif')">
+          <span class="side-nav-left"><span>⚡</span> <span>Interactif & Cheatsheets</span></span>
+          <span class="side-count" id="countInter">0</span>
+        </button>
+      </div>
+
+      <!-- Language Selector -->
+      <div class="side-group">
+        <div class="side-label">
+          <span>Langue (53)</span>
+          <button onclick="openLangModal()" style="border:none; background:none; color:var(--primary); font-size:0.72rem; font-weight:700; cursor:pointer;">Voir tout</button>
+        </div>
+        <select id="langSelectSidebar" class="side-select" onchange="setLanguage(this.value)"></select>
+      </div>
+
+      <!-- Format Filter -->
+      <div class="side-group">
+        <div class="side-label">Format</div>
+        <select id="formatSelect" class="side-select" onchange="applyFilters()">
+          <option value="all">Tous les formats</option>
+          <option value="PDF">📄 Format PDF</option>
+          <option value="Web / HTML">🌐 Site Web / En ligne</option>
+          <option value="Vidéo">🎥 Vidéo / YouTube</option>
+          <option value="EPUB">📱 Livre EPUB</option>
+          <option value="Podcast">🎙️ Podcast Audio</option>
+          <option value="Interactif">⚡ Exercice Interactif</option>
+        </select>
+      </div>
+
+      <!-- Vertical Category List (No horizontal scrollbar!) -->
+      <div class="side-group">
+        <div class="side-label">
+          <span>Sujets & Technologies</span>
+          <span id="catTotalBadge" style="font-weight:600;">0</span>
+        </div>
+        <input type="text" id="catFilterInput" class="side-cat-search" placeholder="Filtrer un sujet (ex: Python)..." oninput="renderSidebarCategories()">
+        <div class="side-cat-list" id="sidebarCategoryList"></div>
+      </div>
+    </aside>
+
+    <!-- RIGHT MAIN CONTENT -->
+    <main class="content-area">
+      <!-- Content Toolbar -->
+      <div class="content-toolbar">
+        <div class="toolbar-left">
+          <span id="resultsSummaryText">Chargement...</span>
+          <div id="activeFilterPills" style="display: flex; gap: 0.4rem; flex-wrap: wrap;"></div>
+        </div>
+
+        <div class="toolbar-right">
+          <select id="sortSelect" class="toolbar-select" onchange="applyFilters()">
+            <option value="title-asc">Tri : Titre (A → Z)</option>
+            <option value="title-desc">Tri : Titre (Z → A)</option>
+            <option value="category">Tri : Par sujet</option>
+          </select>
+
+          <button class="btn-ghost" id="btnViewGrid" onclick="setViewMode('grid')" style="padding: 0.35rem 0.65rem;">⊞ Grille</button>
+          <button class="btn-ghost" id="btnViewList" onclick="setViewMode('list')" style="padding: 0.35rem 0.65rem;">☰ Liste</button>
+        </div>
+      </div>
+
+      <!-- Books Cards Grid -->
+      <div class="cards-grid" id="cardsContainer"></div>
+
+      <!-- Empty State -->
+      <div class="empty-state" id="emptyStateBox" style="display: none;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📭</div>
+        <h3 style="margin-bottom: 0.35rem;">Aucune ressource ne correspond à vos filtres</h3>
+        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.15rem;">
+          Essayez de réinitialiser les filtres ou de chercher dans les 53 langues disponibles.
+        </p>
+        <div style="display: flex; gap: 0.6rem; justify-content: center;">
+          <button class="btn-primary" onclick="setLanguage('all')">🌍 Chercher dans toutes les langues</button>
+          <button class="btn-ghost" onclick="resetAllFilters()">Réinitialiser</button>
+        </div>
+      </div>
+
+      <!-- Load More -->
+      <div class="load-more-wrap" id="loadMoreWrap" style="display: none;">
+        <button class="btn-ghost" id="loadMoreBtn" onclick="loadMoreItems()" style="padding: 0.7rem 1.75rem; background: #fff;">
+          Afficher plus de ressources
+        </button>
+      </div>
+    </main>
+  </div>
+
+  <!-- ==========================================================================
+       CLASSIC AUTHENTICATION MODAL (LOGIN / SIGN UP / SOCIAL OAUTH)
+       ========================================================================== -->
+  <div class="modal-overlay" id="authModal" onclick="if(event.target === this) closeAuthModal()">
+    <div class="auth-container">
+      <button class="auth-close-btn" onclick="closeAuthModal()" title="Fermer">&times;</button>
+
+      <!-- Left Visual Showcase -->
+      <div class="auth-aside">
+        <div>
+          <div class="hero-badge" style="background: #fff;">📚 Espace Membre Gratuit</div>
+          <h3>Votre bibliothèque de code personnelle</h3>
+          <p>Synchronisez vos lectures, organisez vos favoris et accédez à plus de 10 740 ebooks et cours dans 53 langues.</p>
+          <img src="hero-ebook.jpg" alt="Ebooks Programmation" class="auth-aside-img">
+        </div>
+
+        <ul class="auth-benefits">
+          <li><span>✅</span> <span>Sauvegarde illimitée de vos ebooks favoris</span></li>
+          <li><span>✅</span> <span>Accès direct aux PDF, EPUB, cours et podcasts</span></li>
+          <li><span>✅</span> <span>100 % gratuit et open-source</span></li>
+        </ul>
+      </div>
+
+      <!-- Right Classic Auth Form -->
+      <div class="auth-main">
+        <!-- Switcher Tabs -->
+        <div class="auth-tabs" id="authTabsBar">
+          <button class="auth-tab active" id="tabLoginBtn" onclick="switchAuthTab('login')">Se connecter</button>
+          <button class="auth-tab" id="tabSignupBtn" onclick="switchAuthTab('signup')">Créer un compte</button>
+        </div>
+
+        <div class="auth-header-text">
+          <h2 id="authTitle">Bon retour parmi nous</h2>
+          <p id="authSubtitle">Connectez-vous avec votre service préféré ou votre adresse e-mail.</p>
+        </div>
+
+        <!-- OAuth Providers (Google, GitHub, Microsoft, Apple) -->
+        <div id="oauthSection">
+          <div class="oauth-grid">
+            <!-- Google -->
+            <button type="button" class="oauth-btn" onclick="handleSocialLogin('Google')">
+              <svg width="18" height="18" viewBox="0 0 24 24">
+                <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.4 1 3.5 3.6 1.6 7.4l3.7 2.8C6.2 7.2 8.9 5 12 5z"/>
+                <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.6l3.7 2.9c2.2-2 3.7-5 3.7-8.7z"/>
+                <path fill="#FBBC05" d="M5.3 14.8c-.2-.8-.4-1.6-.4-2.5s.2-1.7.4-2.5L1.6 7C.6 9 0 11.2 0 13.5s.6 4.5 1.6 6.5l3.7-2.9z"/>
+                <path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3.1 0-5.8-2.1-6.7-5l-3.7 2.9C3.5 21.4 7.4 24 12 24z"/>
+              </svg>
+              <span>Google</span>
+            </button>
+
+            <!-- GitHub -->
+            <button type="button" class="oauth-btn" onclick="handleSocialLogin('GitHub')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="#0f172a">
+                <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.2.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.1.1 1.7 1.2 1.7 1.2 1 1.7 2.7 1.2 3.3.9.1-.7.4-1.2.7-1.5-2.5-.3-5.2-1.3-5.2-5.7 0-1.3.5-2.3 1.2-3.2-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.4 11.4 0 016 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.8.1 3.1.7.9 1.2 1.9 1.2 3.2 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .4.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.65 18.35.5 12 .5z"/>
+              </svg>
+              <span>GitHub</span>
+            </button>
+
+            <!-- Microsoft -->
+            <button type="button" class="oauth-btn" onclick="handleSocialLogin('Microsoft')">
+              <svg width="17" height="17" viewBox="0 0 23 23">
+                <path fill="#f35325" d="M1 1h10v10H1z"/>
+                <path fill="#81bc06" d="M12 1h10v10H12z"/>
+                <path fill="#05a6f0" d="M1 12h10v10H1z"/>
+                <path fill="#ffba08" d="M12 12h10v10H12z"/>
+              </svg>
+              <span>Microsoft</span>
+            </button>
+
+            <!-- Apple -->
+            <button type="button" class="oauth-btn" onclick="handleSocialLogin('Apple')">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="#0f172a">
+                <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.53 4.08zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+              </svg>
+              <span>Apple</span>
+            </button>
+          </div>
+
+          <div class="auth-divider">ou avec votre e-mail</div>
+        </div>
+
+        <!-- Email / Password Form -->
+        <form class="auth-form" id="authForm" onsubmit="handleAuthSubmit(event)">
+          <!-- Full Name (Sign up only) -->
+          <div class="form-group" id="nameFieldGroup" style="display: none;">
+            <label class="form-label" for="authNameInput">Nom complet</label>
+            <input type="text" id="authNameInput" class="form-input" placeholder="Ex: Sidou Dev">
+          </div>
+
+          <!-- Email -->
+          <div class="form-group">
+            <label class="form-label" for="authEmailInput">Adresse e-mail</label>
+            <input type="email" id="authEmailInput" class="form-input" placeholder="vous@exemple.com" required>
+          </div>
+
+          <!-- Password -->
+          <div class="form-group" id="passwordFieldGroup">
+            <div class="form-label-row">
+              <label class="form-label" for="authPasswordInput">Mot de passe</label>
+              <button type="button" class="forgot-link" id="forgotPwdBtn" onclick="switchAuthTab('forgot')">Mot de passe oublié ?</button>
+            </div>
+            <div class="input-wrap">
+              <input type="password" id="authPasswordInput" class="form-input" placeholder="••••••••" oninput="onPasswordInput(this.value)">
+              <button type="button" class="pwd-toggle" onclick="togglePasswordVisibility('authPasswordInput', 'pwdToggleBtn')" id="pwdToggleBtn">Afficher</button>
+            </div>
+
+            <!-- Password Strength Meter & Real-time Checklist (Sign up only) -->
+            <div class="pwd-strength-container" id="pwdStrengthContainer" style="display: none;">
+              <div class="pwd-strength-header">
+                <span style="color: var(--text-muted);">Force du mot de passe :</span>
+                <span id="pwdStrengthLabel" style="color: var(--rose);">Très faible</span>
+              </div>
+              <div class="pwd-strength-bar">
+                <div class="pwd-strength-fill" id="pwdStrengthFill" style="width: 15%; background-color: var(--rose);"></div>
+              </div>
+              <div class="pwd-rules-grid">
+                <div class="pwd-rule" id="ruleLen">
+                  <span class="pwd-rule-icon">○</span> <span>8 caractères min.</span>
+                </div>
+                <div class="pwd-rule" id="ruleUpper">
+                  <span class="pwd-rule-icon">○</span> <span>1 majuscule (A-Z)</span>
+                </div>
+                <div class="pwd-rule" id="ruleLower">
+                  <span class="pwd-rule-icon">○</span> <span>1 minuscule (a-z)</span>
+                </div>
+                <div class="pwd-rule" id="ruleNum">
+                  <span class="pwd-rule-icon">○</span> <span>1 chiffre (0-9)</span>
+                </div>
+                <div class="pwd-rule" id="ruleSpecial" style="grid-column: span 2;">
+                  <span class="pwd-rule-icon">○</span> <span>1 caractère spécial (!@#$%^&*...)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Confirm Password (Sign up only) -->
+          <div class="form-group" id="confirmPasswordFieldGroup" style="display: none;">
+            <label class="form-label" for="authConfirmPasswordInput">Confirmer le mot de passe</label>
+            <div class="input-wrap">
+              <input type="password" id="authConfirmPasswordInput" class="form-input" placeholder="••••••••" oninput="onConfirmPasswordInput(this.value)">
+              <button type="button" class="pwd-toggle" onclick="togglePasswordVisibility('authConfirmPasswordInput', 'pwdConfirmToggleBtn')" id="pwdConfirmToggleBtn">Afficher</button>
+            </div>
+            <div class="pwd-match-msg" id="pwdMatchMsg"></div>
+          </div>
+
+          <!-- Remember me / Terms -->
+          <label class="checkbox-row" id="rememberRow">
+            <input type="checkbox" id="authTermsCheckbox" checked>
+            <span id="checkboxText">Rester connecté sur cet appareil</span>
+          </label>
+
+          <button type="submit" class="auth-submit-btn" id="authSubmitBtn">Se connecter</button>
+        </form>
+
+        <!-- Email OTP 6-digit Verification View -->
+        <div class="otp-view-box" id="otpVerificationView" style="display: none;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <button type="button" class="btn-ghost" onclick="switchAuthTab('signup')" style="padding: 0.35rem 0.65rem; font-size: 0.78rem;">
+              ← Retour au formulaire
+            </button>
+            <span style="font-size: 0.78rem; font-weight: 700; color: var(--primary);">Étape 2 / 2</span>
+          </div>
+
+          <div class="simulated-inbox-banner">
+            <div class="simulated-inbox-header">
+              <span>📬 Notification : E-mail reçu</span>
+              <span>À l'instant</span>
+            </div>
+            <div class="simulated-inbox-body">
+              <span style="font-size: 0.8rem; color: var(--text-secondary);">Code de vérification :</span>
+              <span class="simulated-otp-display" id="simulatedOtpDisplay">------</span>
+            </div>
+          </div>
+
+          <div>
+            <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 0.25rem;">Vérifiez votre e-mail</h3>
+            <p style="font-size: 0.84rem; color: var(--text-secondary);">
+              Un code de sécurité à 6 chiffres a été envoyé à <strong id="otpTargetEmailText" style="color: var(--text-main);">email</strong>. Saisissez-le pour activer définitivement votre compte.
+            </p>
+          </div>
+
+          <div class="otp-inputs-row" id="otpInputsRow">
+            <input type="text" inputmode="numeric" maxlength="1" class="otp-digit-box" data-otp-idx="0">
+            <input type="text" inputmode="numeric" maxlength="1" class="otp-digit-box" data-otp-idx="1">
+            <input type="text" inputmode="numeric" maxlength="1" class="otp-digit-box" data-otp-idx="2">
+            <input type="text" inputmode="numeric" maxlength="1" class="otp-digit-box" data-otp-idx="3">
+            <input type="text" inputmode="numeric" maxlength="1" class="otp-digit-box" data-otp-idx="4">
+            <input type="text" inputmode="numeric" maxlength="1" class="otp-digit-box" data-otp-idx="5">
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem;">
+            <span style="color: var(--text-muted);">Vous n'avez rien reçu ?</span>
+            <button type="button" class="forgot-link" id="resendOtpBtn" onclick="resendOtpCode()">Renvoyer le code (<span id="otpCountdown">60s</span>)</button>
+          </div>
+
+          <button type="button" class="auth-submit-btn" onclick="verifyOtpCodeAndActivate()">Valider le code & Activer le compte</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       ALL 53 LANGUAGES MODAL
+       ========================================================================== -->
+  <div class="modal-overlay" id="langModal" onclick="if(event.target === this) closeLangModal()">
+    <div class="lang-modal-box">
+      <div class="lang-modal-head">
+        <h3>🌍 Choisir parmi les 53 langues disponibles</h3>
+        <button class="auth-close-btn" style="position: static;" onclick="closeLangModal()">&times;</button>
+      </div>
+      <div class="lang-modal-search">
+        <input type="text" id="langModalSearch" placeholder="Rechercher une langue (Français, English, العربية, Español, 日本語...)" oninput="renderLangModalItems()">
+      </div>
+      <div class="lang-modal-grid" id="langModalGrid"></div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toastBox">Action effectuée</div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>Bibliothèque propulsée par <a href="https://github.com/EbookFoundation/free-programming-books" target="_blank" rel="noopener">EbookFoundation/free-programming-books</a> • 10 740 ressources en 53 langues</p>
+  </footer>
+
+  <!-- DATA -->
+  <script src="data.js"></script>
+
+  <script>
+    const LANGUAGES_META = {
+      "all":   { fr: "Toutes les langues", native: "All Languages", flag: "🌍" },
+      "fr":    { fr: "Français", native: "Français", flag: "🇫🇷" },
+      "en":    { fr: "Anglais", native: "English", flag: "🇬🇧" },
+      "es":    { fr: "Espagnol", native: "Español", flag: "🇪🇸" },
+      "pt_BR": { fr: "Portugais (Brésil)", native: "Português (BR)", flag: "🇧🇷" },
+      "de":    { fr: "Allemand", native: "Deutsch", flag: "🇩🇪" },
+      "ar":    { fr: "Arabe", native: "العربية", flag: "🇸🇦", rtl: true },
+      "zh":    { fr: "Chinois (Simplifié)", native: "简体中文", flag: "🇨🇳" },
+      "ru":    { fr: "Russe", native: "Русский", flag: "🇷🇺" },
+      "ja":    { fr: "Japonais", native: "日本語", flag: "🇯🇵" },
+      "it":    { fr: "Italien", native: "Italiano", flag: "🇮🇹" },
+      "ko":    { fr: "Coréen", native: "한국어", flag: "🇰🇷" },
+      "hi":    { fr: "Hindi", native: "हिन्दी", flag: "🇮🇳" },
+      "vi":    { fr: "Vietnamien", native: "Tiếng Việt", flag: "🇻🇳" },
+      "id":    { fr: "Indonésien", native: "Bahasa Indonesia", flag: "🇮🇩" },
+      "pl":    { fr: "Polonais", native: "Polski", flag: "🇵🇱" },
+      "tr":    { fr: "Turc", native: "Türkçe", flag: "🇹🇷" },
+      "bn":    { fr: "Bengali", native: "বাংলা", flag: "🇧🇩" },
+      "ta":    { fr: "Tamoul", native: "தமிழ்", flag: "🇮🇳" },
+      "te":    { fr: "Télougou", native: "తెలుగు", flag: "🇮🇳" },
+      "fa_IR": { fr: "Persan", native: "فارسی", flag: "🇮🇷", rtl: true },
+      "ml":    { fr: "Malayalam", native: "മലയാളം", flag: "🇮🇳" },
+      "cs":    { fr: "Tchèque", native: "Čeština", flag: "🇨🇿" },
+      "th":    { fr: "Thaï", native: "ไทย", flag: "🇹🇭" },
+      "hu":    { fr: "Hongrois", native: "Magyar", flag: "🇭🇺" },
+      "fi":    { fr: "Finnois", native: "Suomi", flag: "🇫🇮" },
+      "si":    { fr: "Cingalais", native: "සිංහල", flag: "🇱🇰" },
+      "el":    { fr: "Grec", native: "Ελληνικά", flag: "🇬🇷" },
+      "ur":    { fr: "Ourdou", native: "اردو", flag: "🇵🇰", rtl: true },
+      "mr":    { fr: "Marathi", native: "मराठी", flag: "🇮🇳" },
+      "uk":    { fr: "Ukrainien", native: "Українська", flag: "🇺🇦" },
+      "my":    { fr: "Birman", native: "မြန်မာဘာသာ", flag: "🇲🇲" },
+      "sv":    { fr: "Suédois", native: "Svenska", flag: "🇸🇪" },
+      "he":    { fr: "Hébreu", native: "עברית", flag: "🇮🇱", rtl: true },
+      "ne":    { fr: "Népalais", native: "नेपाली", flag: "🇳🇵" },
+      "bg":    { fr: "Bulgare", native: "Български", flag: "🇧🇬" },
+      "et":    { fr: "Estonien", native: "Eesti", flag: "🇪🇪" },
+      "nl":    { fr: "Néerlandais", native: "Nederlands", flag: "🇳🇱" },
+      "pt_PT": { fr: "Portugais (Portugal)", native: "Português (PT)", flag: "🇵🇹" },
+      "ro":    { fr: "Roumain", native: "Română", flag: "🇷🇴" },
+      "km":    { fr: "Khmer", native: "ភាសាខ្មែរ", flag: "🇰🇭" },
+      "sr":    { fr: "Serbe", native: "Српски", flag: "🇷🇸" },
+      "kn":    { fr: "Kannada", native: "ಕನ್ನಡ", flag: "🇮🇳" },
+      "da":    { fr: "Danois", native: "Dansk", flag: "🇩🇰" },
+      "sk":    { fr: "Slovaque", native: "Slovenčina", flag: "🇸🇰" },
+      "kk":    { fr: "Kazakh", native: "Қазақша", flag: "🇰🇿" },
+      "no":    { fr: "Norvégien", native: "Norsk", flag: "🇳🇴" },
+      "az":    { fr: "Azéri", native: "Azərbaycanca", flag: "🇦🇿" },
+      "lv":    { fr: "Letton", native: "Latviešu", flag: "🇱🇻" },
+      "ca":    { fr: "Catalan", native: "Català", flag: "🇪🇸" },
+      "zh_TW": { fr: "Chinois (Traditionnel)", native: "繁體中文", flag: "🇹🇼" },
+      "uz":    { fr: "Ouzbek", native: "Oʻzbekcha", flag: "🇺🇿" },
+      "pa":    { fr: "Pendjabi", native: "ਪੰਜਾਬੀ", flag: "🇮🇳" },
+      "sl":    { fr: "Slovène", native: "Slovenščina", flag: "🇸🇮" },
+      "hy":    { fr: "Arménien", native: "Հայերեն", flag: "🇦🇲" }
+    };
+
+    let rawResources = [];
+    let langCounts = {};
+    let currentCategoryCounts = {};
+    let filteredResources = [];
+    let currentLang = "fr";
+    let currentType = "all";
+    let currentCategory = "all";
+    let onlyFavorites = false;
+    let displayLimit = 48;
+    const PAGE_STEP = 48;
+    let currentAuthMode = "login";
+
+    const FAV_STORAGE_KEY = "fpb_favorites_v2";
+    const USER_STORAGE_KEY = "fpb_current_user";
+
+    function getLangMeta(code) {
+      return LANGUAGES_META[code] || { fr: code.toUpperCase(), native: code, flag: "🌐" };
+    }
+
+    // ==========================================================================
+    // USER AUTHENTICATION LOGIC (LOGIN, SIGNUP, GOOGLE/GITHUB/MICROSOFT/APPLE)
+    // ==========================================================================
+    function initAuth() {
+      try {
+        const savedUser = JSON.parse(localStorage.getItem(USER_STORAGE_KEY) || "null");
+        if (savedUser && savedUser.email) {
+          renderLoggedInUser(savedUser);
+        } else {
+          renderLoggedOutUser();
+        }
+      } catch {
+        renderLoggedOutUser();
+      }
+    }
+
+    function renderLoggedInUser(user) {
+      document.getElementById("authGuestActions").style.display = "none";
+      document.getElementById("authUserMenu").style.display = "block";
+      const initials = (user.name || user.email || "U")
+        .split(" ")
+        .map(w => w[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2);
+      document.getElementById("userAvatarInitials").textContent = initials;
+      document.getElementById("userDisplayName").textContent = user.name || user.email.split("@")[0];
+      document.getElementById("dropdownUserName").textContent =
+        user.provider ? `${user.name} (${user.provider})` : user.name;
+      document.getElementById("dropdownUserEmail").textContent = user.email;
+    }
+
+    function renderLoggedOutUser() {
+      document.getElementById("authGuestActions").style.display = "flex";
+      document.getElementById("authUserMenu").style.display = "none";
+    }
+
+    function openAuthModal(mode = "login") {
+      document.getElementById("authModal").classList.add("open");
+      switchAuthTab(mode);
+    }
+
+    function closeAuthModal() {
+      document.getElementById("authModal").classList.remove("open");
+      if (otpInterval) clearInterval(otpInterval);
+    }
+
+    // State for pending sign up & OTP
+    let pendingRegistrationData = null;
+    let pendingOtpCode = "";
+    let otpCountdownVal = 60;
+    let otpInterval = null;
+    let currentOAuthProvider = "Google";
+
+    // OAuth Provider Metadata
+    const OAUTH_PROVIDERS_CONFIG = {
+      "Google": {
+        name: "Google",
+        title: "Se connecter avec Google",
+        scope: "openid profile email",
+        authUrl: "https://accounts.google.com/o/oauth2/v2/auth",
+        iconSvg: `<svg width="24" height="24" viewBox="0 0 24 24"><path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.4 1 3.5 3.6 1.6 7.4l3.7 2.8C6.2 7.2 8.9 5 12 5z"/><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.6l3.7 2.9c2.2-2 3.7-5 3.7-8.7z"/><path fill="#FBBC05" d="M5.3 14.8c-.2-.8-.4-1.6-.4-2.5s.2-1.7.4-2.5L1.6 7C.6 9 0 11.2 0 13.5s.6 4.5 1.6 6.5l3.7-2.9z"/><path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3.1 0-5.8-2.1-6.7-5l-3.7 2.9C3.5 21.4 7.4 24 12 24z"/></svg>`,
+        defaultAccount: { name: "Sidou Dev", email: "sidou.dev@gmail.com" }
+      },
+      "GitHub": {
+        name: "GitHub",
+        title: "Se connecter avec GitHub",
+        scope: "read:user user:email",
+        authUrl: "https://github.com/login/oauth/authorize",
+        iconSvg: `<svg width="24" height="24" viewBox="0 0 24 24" fill="#0f172a"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.2.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.1.1 1.7 1.2 1.7 1.2 1 1.7 2.7 1.2 3.3.9.1-.7.4-1.2.7-1.5-2.5-.3-5.2-1.3-5.2-5.7 0-1.3.5-2.3 1.2-3.2-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.4 11.4 0 016 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.8.1 3.1.7.9 1.2 1.9 1.2 3.2 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .4.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.65 18.35.5 12 .5z"/></svg>`,
+        defaultAccount: { name: "sidou-code", email: "sidou@github.com" }
+      },
+      "Microsoft": {
+        name: "Microsoft",
+        title: "Se connecter avec Microsoft",
+        scope: "openid profile email User.Read",
+        authUrl: "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
+        iconSvg: `<svg width="22" height="22" viewBox="0 0 23 23"><path fill="#f35325" d="M1 1h10v10H1z"/><path fill="#81bc06" d="M12 1h10v10H12z"/><path fill="#05a6f0" d="M1 12h10v10H1z"/><path fill="#ffba08" d="M12 12h10v10H12z"/></svg>`,
+        defaultAccount: { name: "Sidou Dev", email: "sidou.dev@outlook.com" }
+      },
+      "Apple": {
+        name: "Apple",
+        title: "Se connecter avec Apple",
+        scope: "name email",
+        authUrl: "https://appleid.apple.com/auth/authorize",
+        iconSvg: `<svg width="22" height="22" viewBox="0 0 24 24" fill="#0f172a"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.53 4.08zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>`,
+        defaultAccount: { name: "Sidou Dev", email: "sidou.dev@icloud.com" }
+      }
+    };
+
+    function switchAuthTab(mode) {
+      currentAuthMode = mode;
+      const tabLogin = document.getElementById("tabLoginBtn");
+      const tabSignup = document.getElementById("tabSignupBtn");
+      const authTabsBar = document.getElementById("authTabsBar");
+      const nameGroup = document.getElementById("nameFieldGroup");
+      const pwdGroup = document.getElementById("passwordFieldGroup");
+      const confirmPwdGroup = document.getElementById("confirmPasswordFieldGroup");
+      const pwdStrength = document.getElementById("pwdStrengthContainer");
+      const forgotBtn = document.getElementById("forgotPwdBtn");
+      const oauthSec = document.getElementById("oauthSection");
+      const rememberRow = document.getElementById("rememberRow");
+      const title = document.getElementById("authTitle");
+      const sub = document.getElementById("authSubtitle");
+      const submitBtn = document.getElementById("authSubmitBtn");
+      const checkboxText = document.getElementById("checkboxText");
+      const authForm = document.getElementById("authForm");
+      const otpView = document.getElementById("otpVerificationView");
+
+      if (otpInterval) clearInterval(otpInterval);
+
+      if (mode === "login") {
+        authTabsBar.style.display = "grid";
+        authForm.style.display = "flex";
+        otpView.style.display = "none";
+        tabLogin.classList.add("active");
+        tabSignup.classList.remove("active");
+        nameGroup.style.display = "none";
+        pwdGroup.style.display = "flex";
+        confirmPwdGroup.style.display = "none";
+        pwdStrength.style.display = "none";
+        forgotBtn.style.display = "inline";
+        oauthSec.style.display = "block";
+        rememberRow.style.display = "flex";
+        title.style.display = "block";
+        sub.style.display = "block";
+        title.textContent = "Bon retour parmi nous";
+        sub.textContent = "Connectez-vous avec votre service préféré ou votre e-mail.";
+        checkboxText.textContent = "Rester connecté sur cet appareil";
+        submitBtn.textContent = "Se connecter";
+      } else if (mode === "signup") {
+        authTabsBar.style.display = "grid";
+        authForm.style.display = "flex";
+        otpView.style.display = "none";
+        tabLogin.classList.remove("active");
+        tabSignup.classList.add("active");
+        nameGroup.style.display = "flex";
+        pwdGroup.style.display = "flex";
+        confirmPwdGroup.style.display = "flex";
+        pwdStrength.style.display = "flex";
+        forgotBtn.style.display = "none";
+        oauthSec.style.display = "block";
+        rememberRow.style.display = "flex";
+        title.style.display = "block";
+        sub.style.display = "block";
+        title.textContent = "Créer votre compte gratuit";
+        sub.textContent = "Rejoignez la bibliothèque avec Google, GitHub ou votre e-mail.";
+        checkboxText.textContent = "J'accepte les conditions d'utilisation et la politique de confidentialité";
+        submitBtn.textContent = "Continuer vers la vérification e-mail (OTP)";
+        onPasswordInput(document.getElementById("authPasswordInput").value);
+        onConfirmPasswordInput(document.getElementById("authConfirmPasswordInput").value);
+      } else if (mode === "forgot") {
+        authTabsBar.style.display = "grid";
+        authForm.style.display = "flex";
+        otpView.style.display = "none";
+        tabLogin.classList.remove("active");
+        tabSignup.classList.remove("active");
+        nameGroup.style.display = "none";
+        pwdGroup.style.display = "none";
+        confirmPwdGroup.style.display = "none";
+        pwdStrength.style.display = "none";
+        oauthSec.style.display = "none";
+        rememberRow.style.display = "none";
+        title.style.display = "block";
+        sub.style.display = "block";
+        title.textContent = "Réinitialiser le mot de passe";
+        sub.textContent = "Entrez votre adresse e-mail pour recevoir un lien de réinitialisation.";
+        submitBtn.textContent = "Envoyer le lien";
+      } else if (mode === "verify_otp") {
+        authTabsBar.style.display = "none";
+        authForm.style.display = "none";
+        oauthSec.style.display = "none";
+        title.style.display = "none";
+        sub.style.display = "none";
+        otpView.style.display = "flex";
+
+        document.getElementById("otpTargetEmailText").textContent = pendingRegistrationData.email;
+        startOtpCountdown();
+        setupOtpInputListeners();
+      }
+    }
+
+    function togglePasswordVisibility(inputId, btnId) {
+      const pwd = document.getElementById(inputId);
+      const btn = document.getElementById(btnId);
+      if (pwd.type === "password") {
+        pwd.type = "text";
+        btn.textContent = "Masquer";
+      } else {
+        pwd.type = "password";
+        btn.textContent = "Afficher";
+      }
+    }
+
+    // ==========================================================================
+    // PASSWORD STRENGTH & COMPLEXITY VALIDATION
+    // ==========================================================================
+    function checkPasswordCriteria(val) {
+      return {
+        len: val.length >= 8,
+        upper: /[A-Z]/.test(val),
+        lower: /[a-z]/.test(val),
+        num: /[0-9]/.test(val),
+        special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]/.test(val)
+      };
+    }
+
+    function onPasswordInput(val) {
+      if (currentAuthMode !== "signup") return;
+      const c = checkPasswordCriteria(val);
+
+      setRuleUI("ruleLen", c.len);
+      setRuleUI("ruleUpper", c.upper);
+      setRuleUI("ruleLower", c.lower);
+      setRuleUI("ruleNum", c.num);
+      setRuleUI("ruleSpecial", c.special);
+
+      const score = (c.len ? 1 : 0) + (c.upper ? 1 : 0) + (c.lower ? 1 : 0) + (c.num ? 1 : 0) + (c.special ? 1 : 0);
+      const fill = document.getElementById("pwdStrengthFill");
+      const label = document.getElementById("pwdStrengthLabel");
+
+      if (val.length === 0) {
+        fill.style.width = "0%";
+        fill.style.backgroundColor = "var(--border-strong)";
+        label.textContent = "Non renseigné";
+        label.style.color = "var(--text-muted)";
+      } else if (score <= 1) {
+        fill.style.width = "20%";
+        fill.style.backgroundColor = "var(--rose)";
+        label.textContent = "Très faible";
+        label.style.color = "var(--rose)";
+      } else if (score === 2) {
+        fill.style.width = "40%";
+        fill.style.backgroundColor = "var(--amber)";
+        label.textContent = "Faible";
+        label.style.color = "var(--amber)";
+      } else if (score === 3) {
+        fill.style.width = "65%";
+        fill.style.backgroundColor = "#eab308";
+        label.textContent = "Moyen";
+        label.style.color = "#b45309";
+      } else if (score === 4) {
+        fill.style.width = "85%";
+        fill.style.backgroundColor = "var(--primary)";
+        label.textContent = "Bon";
+        label.style.color = "var(--primary)";
+      } else {
+        fill.style.width = "100%";
+        fill.style.backgroundColor = "var(--emerald)";
+        label.textContent = "Excellent";
+        label.style.color = "var(--emerald)";
+      }
+
+      const confirmVal = document.getElementById("authConfirmPasswordInput").value;
+      if (confirmVal) onConfirmPasswordInput(confirmVal);
+    }
+
+    function setRuleUI(elemId, isValid) {
+      const el = document.getElementById(elemId);
+      if (!el) return;
+      el.classList.toggle("valid", isValid);
+      const icon = el.querySelector(".pwd-rule-icon");
+      if (icon) icon.textContent = isValid ? "✓" : "○";
+    }
+
+    function onConfirmPasswordInput(confirmVal) {
+      const pwd = document.getElementById("authPasswordInput").value;
+      const msg = document.getElementById("pwdMatchMsg");
+      const input = document.getElementById("authConfirmPasswordInput");
+
+      if (!confirmVal) {
+        msg.className = "pwd-match-msg";
+        msg.textContent = "";
+        input.style.borderColor = "var(--border)";
+        return;
+      }
+
+      if (confirmVal === pwd) {
+        msg.className = "pwd-match-msg valid";
+        msg.textContent = "✓ Les mots de passe correspondent parfaitement";
+        input.style.borderColor = "var(--emerald)";
+      } else {
+        msg.className = "pwd-match-msg invalid";
+        msg.textContent = "⚠ Les mots de passe ne correspondent pas";
+        input.style.borderColor = "var(--rose)";
+      }
+    }
+
+    // ==========================================================================
+    // OTP VERIFICATION (6 DIGITS)
+    // ==========================================================================
+    function startOtpCountdown() {
+      pendingOtpCode = Math.floor(100000 + Math.random() * 900000).toString();
+      document.getElementById("simulatedOtpDisplay").textContent = pendingOtpCode;
+      otpCountdownVal = 60;
+      const cdEl = document.getElementById("otpCountdown");
+      const resendBtn = document.getElementById("resendOtpBtn");
+      cdEl.textContent = `${otpCountdownVal}s`;
+      resendBtn.style.pointerEvents = "none";
+      resendBtn.style.opacity = "0.5";
+
+      if (otpInterval) clearInterval(otpInterval);
+      otpInterval = setInterval(() => {
+        otpCountdownVal--;
+        if (otpCountdownVal > 0) {
+          cdEl.textContent = `${otpCountdownVal}s`;
+        } else {
+          clearInterval(otpInterval);
+          cdEl.textContent = "Disponible";
+          resendBtn.style.pointerEvents = "auto";
+          resendBtn.style.opacity = "1";
+        }
+      }, 1000);
+    }
+
+    function resendOtpCode() {
+      if (otpCountdownVal > 0) return;
+      startOtpCountdown();
+      showToast(`📬 Nouveau code de sécurité généré : ${pendingOtpCode}`);
+    }
+
+    function setupOtpInputListeners() {
+      const boxes = document.querySelectorAll(".otp-digit-box");
+      boxes.forEach((box, i) => {
+        box.value = "";
+        box.oninput = (e) => {
+          const val = e.target.value;
+          if (val && i < boxes.length - 1) {
+            boxes[i + 1].focus();
+          }
+        };
+        box.onkeydown = (e) => {
+          if (e.key === "Backspace" && !e.target.value && i > 0) {
+            boxes[i - 1].focus();
+          }
+        };
+        box.onpaste = (e) => {
+          e.preventDefault();
+          const pasteData = (e.clipboardData || window.clipboardData).getData("text").replace(/\D/g, "").slice(0, 6);
+          pasteData.split("").forEach((char, idx) => {
+            if (boxes[idx]) boxes[idx].value = char;
+          });
+          if (pasteData.length === 6) {
+            boxes[5].focus();
+          }
+        };
+      });
+      setTimeout(() => boxes[0].focus(), 60);
+    }
+
+    function verifyOtpCodeAndActivate() {
+      const boxes = document.querySelectorAll(".otp-digit-box");
+      let entered = "";
+      boxes.forEach(b => entered += (b.value || "").trim());
+
+      if (entered.length < 6) {
+        showToast("⚠️ Veuillez saisir les 6 chiffres du code reçu.");
+        return;
+      }
+
+      if (entered === pendingOtpCode) {
+        if (otpInterval) clearInterval(otpInterval);
+        const user = {
+          name: pendingRegistrationData.name || pendingRegistrationData.email.split("@")[0],
+          email: pendingRegistrationData.email,
+          provider: "E-mail (Vérifié par code OTP)"
+        };
+        localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(user));
+        renderLoggedInUser(user);
+        closeAuthModal();
+        showToast(`🎉 Compte vérifié et activé ! Bienvenue ${user.name}`);
+      } else {
+        showToast("❌ Code incorrect. Vérifiez le code à 6 chiffres affiché.");
+        boxes.forEach(b => {
+          b.style.borderColor = "var(--rose)";
+          setTimeout(() => b.style.borderColor = "var(--border)", 1500);
+        });
+      }
+    }
+
+    // ==========================================================================
+    // FORM SUBMISSION (LOGIN / SIGN UP / FORGOT)
+    // ==========================================================================
+    function handleAuthSubmit(ev) {
+      ev.preventDefault();
+      const email = document.getElementById("authEmailInput").value.trim();
+      const nameInput = document.getElementById("authNameInput").value.trim();
+      const pwd = document.getElementById("authPasswordInput").value;
+      const confirmPwd = document.getElementById("authConfirmPasswordInput").value;
+
+      if (currentAuthMode === "forgot") {
+        showToast(`📩 Lien de réinitialisation envoyé à ${email}`);
+        switchAuthTab("login");
+        return;
+      }
+
+      if (currentAuthMode === "login") {
+        if (!email || !pwd) {
+          showToast("⚠️ Veuillez remplir votre e-mail et votre mot de passe.");
+          return;
+        }
+        const user = {
+          name: email.split("@")[0],
+          email: email,
+          provider: "E-mail"
+        };
+        localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(user));
+        renderLoggedInUser(user);
+        closeAuthModal();
+        showToast(`✅ Bon retour, ${user.name} !`);
+        return;
+      }
+
+      // Mode: Sign up
+      if (currentAuthMode === "signup") {
+        const criteria = checkPasswordCriteria(pwd);
+        const isComplex = criteria.len && criteria.upper && criteria.lower && criteria.num && criteria.special;
+
+        if (!isComplex) {
+          showToast("⚠️ Le mot de passe ne respecte pas les 5 critères de sécurité requis.");
+          return;
+        }
+
+        if (pwd !== confirmPwd) {
+          showToast("⚠️ Les deux mots de passe ne correspondent pas.");
+          return;
+        }
+
+        const termsChecked = document.getElementById("authTermsCheckbox").checked;
+        if (!termsChecked) {
+          showToast("⚠️ Veuillez accepter les conditions d'utilisation.");
+          return;
+        }
+
+        // Store pending data and switch to OTP email verification
+        pendingRegistrationData = {
+          name: nameInput || email.split("@")[0],
+          email: email,
+          password: pwd
+        };
+
+        switchAuthTab("verify_otp");
+        showToast(`📬 Un code de vérification à 6 chiffres a été généré pour ${email}`);
+      }
+    }
+
+    // ==========================================================================
+    // OAUTH 2.0 / OPENID CONNECT AUTHORIZATION & CONSENT FLOW
+    // ==========================================================================
+    const OAUTH_CLIENT_IDS_KEY = "fpb_oauth_client_ids";
+
+    function getSavedClientId(provider) {
+      try {
+        const map = JSON.parse(localStorage.getItem(OAUTH_CLIENT_IDS_KEY) || "{}");
+        if (map[provider]) return map[provider];
+      } catch {}
+      // Default placeholder / standard client id formats
+      if (provider === "Google") return "1083472918451-fpbbooksdemoapp.apps.googleusercontent.com";
+      if (provider === "GitHub") return "Iv1.fpbgithuboauth2demo";
+      if (provider === "Microsoft") return "a1b2c3d4-e5f6-7890-abcd-ef1234567890";
+      return "com.freeprogrammingbooks.client";
+    }
+
+    function saveClientId(provider, id) {
+      try {
+        const map = JSON.parse(localStorage.getItem(OAUTH_CLIENT_IDS_KEY) || "{}");
+        map[provider] = id;
+        localStorage.setItem(OAUTH_CLIENT_IDS_KEY, JSON.stringify(map));
+      } catch {}
+    }
+
+    function generateOAuthUrl(provider) {
+      const cfg = OAUTH_PROVIDERS_CONFIG[provider] || OAUTH_PROVIDERS_CONFIG["Google"];
+      const clientId = getSavedClientId(provider);
+      const redirectUri = window.location.origin && window.location.origin !== "null"
+        ? (window.location.origin + window.location.pathname)
+        : window.location.href;
+      const state = "state_" + Math.random().toString(36).substring(2, 10);
+      const scope = encodeURIComponent(cfg.scope);
+
+      // Force account selection and consent prompt (OAuth 2.0 / OpenID Connect)
+      let promptParam = "select_account%20consent";
+      if (provider === "GitHub") {
+        promptParam = "consent";
+      }
+
+      return `${cfg.authUrl}?client_id=${encodeURIComponent(clientId)}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${scope}&prompt=${promptParam}&access_type=offline&state=${state}`;
+    }
+
+    function handleSocialLogin(provider) {
+      currentOAuthProvider = provider;
+      closeAuthModal();
+
+      const cfg = OAUTH_PROVIDERS_CONFIG[provider] || OAUTH_PROVIDERS_CONFIG["Google"];
+      const clientId = getSavedClientId(provider);
+
+      // Direct Google Identity Services Code Client popup if SDK loaded
+      if (provider === "Google" && window.google && window.google.accounts && window.google.accounts.oauth2) {
+        try {
+          const client = google.accounts.oauth2.initCodeClient({
+            client_id: clientId,
+            scope: "openid profile email",
+            prompt: "select_account consent",
+            ux_mode: "popup",
+            callback: (res) => {
+              if (res.code) {
+                const user = {
+                  name: "Utilisateur Google",
+                  email: "google.user@gmail.com",
+                  provider: "Google (OAuth 2.0 GSI • prompt=select_account consent)"
+                };
+                localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(user));
+                renderLoggedInUser(user);
+                showToast(`✅ Code OAuth 2.0 reçu (${res.code.slice(0, 10)}...) ! Connecté avec Google.`);
+              }
+            }
+          });
+          client.requestCode();
+          showToast("🌐 Ouverture directe de la popup Google OAuth 2.0 (select_account & consent)...");
+          return;
+        } catch (err) {
+          console.warn("GSI initCodeClient:", err);
+        }
+      }
+
+      // Direct native OAuth 2.0 popup window
+      const url = generateOAuthUrl(provider);
+      const width = 520;
+      const height = 660;
+      const left = Math.max(0, Math.round(window.screenX + (window.outerWidth - width) / 2));
+      const top = Math.max(0, Math.round(window.screenY + (window.outerHeight - height) / 2));
+      const features = `width=${width},height=${height},top=${top},left=${left},status=no,resizable=yes,scrollbars=yes`;
+
+      const popup = window.open(url, `oauth_${provider}`, features);
+      if (popup) {
+        showToast(`🌐 Ouverture de la fenêtre OAuth 2.0 vers ${provider} (prompt=select_account consent)`);
+        popup.focus();
+      } else {
+        showToast("⚠️ Le navigateur a bloqué la fenêtre popup. Veuillez autoriser les fenêtres surgissantes pour ce site.");
+      }
+    }
+
+    function checkOAuthUrlCallback() {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const code = params.get("code");
+        const state = params.get("state");
+        if (code) {
+          const user = {
+            name: "Utilisateur OAuth 2.0",
+            email: "oauth.user@domaine.com",
+            provider: `OAuth 2.0 Code: ${code.slice(0, 10)}...`
+          };
+          localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(user));
+          renderLoggedInUser(user);
+          showToast(`✅ Autorisation OAuth 2.0 réussie ! Code: ${code.slice(0, 12)}...`);
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
+      } catch (e) {
+        console.error("OAuth callback check error:", e);
+      }
+    }
+
+    function toggleUserDropdown(ev) {
+      ev.stopPropagation();
+      document.getElementById("userDropdown").classList.toggle("open");
+    }
+
+    function closeUserDropdown() {
+      document.getElementById("userDropdown").classList.remove("open");
+    }
+
+    function logoutUser() {
+      localStorage.removeItem(USER_STORAGE_KEY);
+      renderLoggedOutUser();
+      closeUserDropdown();
+      showToast("Vous êtes déconnecté.");
+    }
+
+    // ==========================================================================
+    // FAVORITES & DATA INITIALIZATION
+    // ==========================================================================
+    function getFavorites() {
+      try {
+        return JSON.parse(localStorage.getItem(FAV_STORAGE_KEY) || "[]");
+      } catch {
+        return [];
+      }
+    }
+
+    function isFav(url) {
+      return getFavorites().includes(url);
+    }
+
+    function toggleFav(url, ev) {
+      if (ev) ev.stopPropagation();
+      let favs = getFavorites();
+      if (favs.includes(url)) {
+        favs = favs.filter(u => u !== url);
+        showToast("Retiré des favoris");
+      } else {
+        favs.push(url);
+        showToast("⭐ Ajouté à vos favoris !");
+      }
+      localStorage.setItem(FAV_STORAGE_KEY, JSON.stringify(favs));
+      updateFavCounter();
+      applyFilters(false);
+    }
+
+    function updateFavCounter() {
+      document.getElementById("favCountText").textContent = `Favoris (${getFavorites().length})`;
+    }
+
+    function toggleFavoritesMode() {
+      onlyFavorites = !onlyFavorites;
+      document.getElementById("favFilterBtn").classList.toggle("active-fav", onlyFavorites);
+      applyFilters();
+    }
+
+    function initApp() {
+      initAuth();
+      checkOAuthUrlCallback();
+
+      if (window.FPB_DATA && Array.isArray(window.FPB_DATA)) {
+        rawResources = window.FPB_DATA.map(item => ({
+          title: item.t || item.title || "",
+          url: item.u || item.url || "",
+          category: item.c || item.category || "Général",
+          author: item.a || item.author || "",
+          format: item.f || item.format || "Web / HTML",
+          type: (item.y === "Cheatsheet" ? "Interactif" : (item.y || item.type || "Livre")),
+          lang: item.l || item.lang || "en"
+        }));
+      }
+
+      langCounts = { all: rawResources.length };
+      rawResources.forEach(r => {
+        langCounts[r.lang] = (langCounts[r.lang] || 0) + 1;
+      });
+
+      document.getElementById("heroTotalResources").textContent = rawResources.length.toLocaleString("fr-FR");
+      updateFavCounter();
+      buildLanguageControls();
+      populateSidebarCategories();
+      applyFilters();
+
+      const sInput = document.getElementById("searchInput");
+      sInput.addEventListener("input", () => {
+        document.getElementById("clearSearchBtn").classList.toggle("visible", sInput.value.length > 0);
+        applyFilters();
+      });
+
+      window.addEventListener("keydown", (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+          e.preventDefault();
+          sInput.focus();
+          sInput.select();
+        } else if (e.key === "Escape") {
+          closeLangModal();
+          closeAuthModal();
+          closeUserDropdown();
+        }
+      });
+
+      window.addEventListener("click", () => closeUserDropdown());
+    }
+
+    function buildLanguageControls() {
+      const meta = getLangMeta(currentLang);
+      document.getElementById("navLangFlag").textContent = meta.flag;
+      document.getElementById("navLangName").textContent = meta.fr;
+
+      const curCnt = langCounts[currentLang] || 0;
+      document.getElementById("heroCurrentLangCount").textContent = curCnt.toLocaleString("fr-FR");
+      document.getElementById("heroCurrentLangLabel").textContent =
+        currentLang === "all" ? "Toutes langues" : `En ${meta.fr}`;
+
+      const select = document.getElementById("langSelectSidebar");
+      const sortedCodes = Object.keys(langCounts)
+        .filter(c => c !== "all")
+        .sort((a, b) => (langCounts[b] || 0) - (langCounts[a] || 0));
+
+      let html = `<option value="all" ${currentLang === "all" ? "selected" : ""}>🌍 Toutes les langues (${rawResources.length.toLocaleString("fr-FR")})</option>`;
+      sortedCodes.forEach(code => {
+        const m = getLangMeta(code);
+        const cnt = langCounts[code] || 0;
+        const sel = code === currentLang ? "selected" : "";
+        html += `<option value="${code}" ${sel}>${m.flag} ${m.fr} (${cnt})</option>`;
+      });
+      select.innerHTML = html;
+    }
+
+    function setLanguage(langCode) {
+      currentLang = langCode;
+      currentCategory = "all";
+      buildLanguageControls();
+      populateSidebarCategories();
+      applyFilters();
+      closeLangModal();
+    }
+
+    function setTypeFilter(type) {
+      currentType = type;
+      document.querySelectorAll(".side-nav-btn[data-type]").forEach(btn => {
+        btn.classList.toggle("active", btn.getAttribute("data-type") === type);
+      });
+      populateSidebarCategories();
+      applyFilters();
+    }
+
+    function selectCategory(cat) {
+      currentCategory = cat;
+      renderSidebarCategories();
+      applyFilters();
+    }
+
+    function populateSidebarCategories() {
+      currentCategoryCounts = {};
+      rawResources.forEach(r => {
+        if (currentLang !== "all" && r.lang !== currentLang) return;
+        if (currentType !== "all" && r.type !== currentType) return;
+        const c = r.category || "Général";
+        currentCategoryCounts[c] = (currentCategoryCounts[c] || 0) + 1;
+      });
+      renderSidebarCategories();
+    }
+
+    function renderSidebarCategories() {
+      const list = document.getElementById("sidebarCategoryList");
+      const q = (document.getElementById("catFilterInput").value || "").toLowerCase().trim();
+      const allCats = Object.keys(currentCategoryCounts).sort((a, b) => currentCategoryCounts[b] - currentCategoryCounts[a]);
+
+      document.getElementById("catTotalBadge").textContent = `${allCats.length} sujets`;
+
+      let html = `
+        <button class="side-nav-btn ${currentCategory === 'all' ? 'active' : ''}" onclick="selectCategory('all')">
+          <span class="side-nav-left"><span>✨</span> <span>Tous les sujets</span></span>
+          <span class="side-count">${allCats.length}</span>
+        </button>
+      `;
+
+      allCats
+        .filter(c => !q || c.toLowerCase().includes(q))
+        .forEach(cat => {
+          const isAct = currentCategory === cat ? "active" : "";
+          html += `
+            <button class="side-nav-btn ${isAct}" onclick="selectCategory('${escapeJs(cat)}')">
+              <span class="side-nav-left" title="${escapeHtml(cat)}">${escapeHtml(cat)}</span>
+              <span class="side-count">${currentCategoryCounts[cat]}</span>
+            </button>
+          `;
+        });
+
+      list.innerHTML = html;
+    }
+
+    function applyFilters(resetPage = true) {
+      const query = (document.getElementById("searchInput").value || "").toLowerCase().trim();
+      const format = document.getElementById("formatSelect").value;
+      const sortBy = document.getElementById("sortSelect").value;
+
+      let cAll = 0, cBooks = 0, cCourses = 0, cPodcasts = 0, cInter = 0;
+
+      filteredResources = rawResources.filter(item => {
+        if (currentLang !== "all" && item.lang !== currentLang) return false;
+        if (format !== "all" && item.format !== format) return false;
+        if (currentCategory !== "all" && item.category !== currentCategory) return false;
+        if (onlyFavorites && !isFav(item.url)) return false;
+
+        if (query) {
+          const mTitle = item.title.toLowerCase().includes(query);
+          const mAuth = item.author.toLowerCase().includes(query);
+          const mCat = item.category.toLowerCase().includes(query);
+          if (!mTitle && !mAuth && !mCat) return false;
+        }
+
+        cAll++;
+        if (item.type === "Livre") cBooks++;
+        else if (item.type === "Cours") cCourses++;
+        else if (item.type === "Podcast") cPodcasts++;
+        else cInter++;
+
+        if (currentType !== "all" && item.type !== currentType) return false;
+        return true;
+      });
+
+      document.getElementById("countAll").textContent = cAll.toLocaleString("fr-FR");
+      document.getElementById("countBooks").textContent = cBooks.toLocaleString("fr-FR");
+      document.getElementById("countCourses").textContent = cCourses.toLocaleString("fr-FR");
+      document.getElementById("countPodcasts").textContent = cPodcasts.toLocaleString("fr-FR");
+      document.getElementById("countInter").textContent = cInter.toLocaleString("fr-FR");
+
+      if (sortBy === "title-asc") {
+        filteredResources.sort((a, b) => a.title.localeCompare(b.title, "fr"));
+      } else if (sortBy === "title-desc") {
+        filteredResources.sort((a, b) => b.title.localeCompare(a.title, "fr"));
+      } else if (sortBy === "category") {
+        filteredResources.sort((a, b) => a.category.localeCompare(b.category, "fr"));
+      }
+
+      if (resetPage) displayLimit = PAGE_STEP;
+      renderActiveFilterPills();
+      renderCards();
+    }
+
+    function renderActiveFilterPills() {
+      const wrap = document.getElementById("activeFilterPills");
+      let html = "";
+      if (currentCategory !== "all") {
+        html += `<span class="active-filter-tag">${escapeHtml(currentCategory)} <button onclick="selectCategory('all')">&times;</button></span>`;
+      }
+      if (onlyFavorites) {
+        html += `<span class="active-filter-tag">⭐ Favoris <button onclick="toggleFavoritesMode()">&times;</button></span>`;
+      }
+      wrap.innerHTML = html;
+    }
+
+    function renderCards() {
+      const container = document.getElementById("cardsContainer");
+      const emptyBox = document.getElementById("emptyStateBox");
+      const loadMoreWrap = document.getElementById("loadMoreWrap");
+      const summary = document.getElementById("resultsSummaryText");
+
+      const total = filteredResources.length;
+      const meta = getLangMeta(currentLang);
+      summary.innerHTML = `<strong>${total.toLocaleString("fr-FR")}</strong> ressource(s) en <strong>${meta.flag} ${meta.fr}</strong>`;
+
+      if (total === 0) {
+        container.innerHTML = "";
+        emptyBox.style.display = "block";
+        loadMoreWrap.style.display = "none";
+        return;
+      }
+
+      emptyBox.style.display = "none";
+      const slice = filteredResources.slice(0, displayLimit);
+
+      container.innerHTML = slice.map(item => {
+        const fav = isFav(item.url);
+        const lMeta = getLangMeta(item.lang);
+        const fmtClass = getFormatTagClass(item.format);
+        const domain = extractDomain(item.url);
+        const rtlAttr = lMeta.rtl ? 'dir="rtl"' : '';
+
+        return `
+          <article class="book-card" ${rtlAttr}>
+            <div class="book-card-main">
+              <div class="book-card-top">
+                <div class="badge-row">
+                  <span class="tag tag-cat" onclick="selectCategory('${escapeJs(item.category)}')">${escapeHtml(item.category)}</span>
+                  <span class="tag ${fmtClass}">${escapeHtml(item.format)}</span>
+                  ${currentLang === 'all' ? `<span class="tag tag-cat">${lMeta.flag} ${item.lang.toUpperCase()}</span>` : ''}
+                </div>
+                <div class="card-icon-actions">
+                  <button class="card-icon-btn" onclick="copyResourceUrl('${escapeJs(item.url)}', event)" title="Copier le lien">🔗</button>
+                  <button class="card-icon-btn ${fav ? 'fav-on' : ''}" onclick="toggleFav('${escapeJs(item.url)}', event)" title="Favori">
+                    ${fav ? '★' : '☆'}
+                  </button>
+                </div>
+              </div>
+
+              <h3 class="book-title">
+                <a href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(item.title)}</a>
+              </h3>
+              ${item.author ? `<p class="book-author">${escapeHtml(item.author)}</p>` : ''}
+            </div>
+
+            <div class="book-card-footer">
+              <span class="book-domain" title="${escapeHtml(domain)}">${escapeHtml(domain)}</span>
+              <a href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer" class="btn-read">
+                <span>Ouvrir</span>
+                <span>↗</span>
+              </a>
+            </div>
+          </article>
+        `;
+      }).join("");
+
+      if (total > displayLimit) {
+        loadMoreWrap.style.display = "block";
+        const rem = total - displayLimit;
+        document.getElementById("loadMoreBtn").textContent =
+          `Afficher plus de ressources (${rem.toLocaleString("fr-FR")} restantes)`;
+      } else {
+        loadMoreWrap.style.display = "none";
+      }
+    }
+
+    function loadMoreItems() {
+      displayLimit += PAGE_STEP;
+      renderCards();
+    }
+
+    function setViewMode(mode) {
+      const container = document.getElementById("cardsContainer");
+      container.classList.toggle("list-mode", mode === "list");
+    }
+
+    function openLangModal() {
+      document.getElementById("langModal").classList.add("open");
+      const input = document.getElementById("langModalSearch");
+      input.value = "";
+      renderLangModalItems();
+      setTimeout(() => input.focus(), 50);
+    }
+
+    function closeLangModal() {
+      document.getElementById("langModal").classList.remove("open");
+    }
+
+    function renderLangModalItems() {
+      const q = (document.getElementById("langModalSearch").value || "").toLowerCase().trim();
+      const grid = document.getElementById("langModalGrid");
+
+      const codes = Object.keys(langCounts).sort((a, b) => {
+        if (a === "all") return -1;
+        if (b === "all") return 1;
+        return (langCounts[b] || 0) - (langCounts[a] || 0);
+      });
+
+      grid.innerHTML = codes.filter(code => {
+        if (!q) return true;
+        const meta = getLangMeta(code);
+        return meta.fr.toLowerCase().includes(q) ||
+               meta.native.toLowerCase().includes(q) ||
+               code.toLowerCase().includes(q);
+      }).map(code => {
+        const meta = getLangMeta(code);
+        const count = langCounts[code] || 0;
+        const act = code === currentLang ? "active" : "";
+        return `
+          <button class="lang-item-btn ${act}" onclick="setLanguage('${code}')">
+            <div style="display:flex; align-items:center; gap:0.55rem; overflow:hidden;">
+              <span style="font-size:1.3rem;">${meta.flag}</span>
+              <div style="display:flex; flex-direction:column; overflow:hidden;">
+                <span style="font-size:0.84rem; font-weight:700; color:var(--text-main); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(meta.fr)}</span>
+                <span style="font-size:0.72rem; color:var(--text-muted);">${escapeHtml(meta.native)}</span>
+              </div>
+            </div>
+            <span class="side-count">${count.toLocaleString("fr-FR")}</span>
+          </button>
+        `;
+      }).join("");
+    }
+
+    function clearSearch() {
+      const input = document.getElementById("searchInput");
+      input.value = "";
+      document.getElementById("clearSearchBtn").classList.remove("visible");
+      input.focus();
+      applyFilters();
+    }
+
+    function resetAllFilters() {
+      document.getElementById("searchInput").value = "";
+      document.getElementById("clearSearchBtn").classList.remove("visible");
+      document.getElementById("formatSelect").value = "all";
+      document.getElementById("sortSelect").value = "title-asc";
+      document.getElementById("catFilterInput").value = "";
+      if (onlyFavorites) toggleFavoritesMode();
+      currentType = "all";
+      document.querySelectorAll(".side-nav-btn[data-type]").forEach(btn => {
+        btn.classList.toggle("active", btn.getAttribute("data-type") === "all");
+      });
+      setLanguage("fr");
+    }
+
+    function copyResourceUrl(url, ev) {
+      if (ev) ev.stopPropagation();
+      navigator.clipboard.writeText(url).then(() => {
+        showToast("🔗 Lien copié dans le presse-papiers !");
+      });
+    }
+
+    let toastTimer = null;
+    function showToast(msg) {
+      const box = document.getElementById("toastBox");
+      box.textContent = msg;
+      box.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => box.classList.remove("show"), 2500);
+    }
+
+    function getFormatTagClass(fmt) {
+      if (!fmt) return "tag-web";
+      if (fmt.includes("PDF")) return "tag-pdf";
+      if (fmt.includes("Vidéo")) return "tag-video";
+      if (fmt.includes("EPUB")) return "tag-epub";
+      if (fmt.includes("Podcast")) return "tag-podcast";
+      if (fmt.includes("Interactif")) return "tag-inter";
+      return "tag-web";
+    }
+
+    function extractDomain(url) {
+      try {
+        return new URL(url).hostname.replace(/^www\./, "");
+      } catch {
+        return "web";
+      }
+    }
+
+    function escapeHtml(str) {
+      if (!str) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function escapeJs(str) {
+      if (!str) return "";
+      return String(str).replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+    }
+
+    window.addEventListener("DOMContentLoaded", initApp);
+  </script>
+</body>
+</html>

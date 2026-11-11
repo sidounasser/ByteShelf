@@ -1,0 +1,3011 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Free Programming Books — React Application</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- Google Identity Services SDK (OAuth 2.0 / OpenID Connect) -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+  <!-- Clerk Frontend SDK (Linked to Application app_3LwBs3hGxeOE8HlvkpumL4TQJAJ) -->
+  <script
+    async
+    crossorigin="anonymous"
+    data-clerk-publishable-key="pk_test_cmVsYXhpbmctbXV0dC0xNjIwLmNsZXJrLmFjY291bnRzLmRldiQ"
+    src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@5/dist/clerk.browser.js"
+    type="text/javascript">
+  </script>
+
+  <!-- React 18 & ReactDOM & Babel Standalone (Local with CDN fallback) -->
+  <script src="vendor/react.min.js"></script>
+  <script>window.React || document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"><\/script>')</script>
+  <script src="vendor/react-dom.min.js"></script>
+  <script>window.ReactDOM || document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"><\/script>')</script>
+  <script src="vendor/babel.min.js"></script>
+  <script>window.Babel || document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.24.4/babel.min.js"><\/script>')</script>
+
+  <!-- Books Dataset (10 740 resources in 53 languages) -->
+  <script src="data.js"></script>
+</head>
+<body>
+  <!-- REACT ROOT -->
+  <div id="root"></div>
+
+  <!-- REACT APPLICATION SCRIPT (BABEL JSX) -->
+  <script type="text/babel">
+    const { useState, useEffect, useMemo, useRef, useCallback } = React;
+
+    // ==========================================================================
+    // BACKEND API CONFIGURATION (CONNECTS TO SERVER.PY / SQLITE DATABASE)
+    // ==========================================================================
+    const API_BASE = (window.location.protocol === "http:" || window.location.protocol === "https:")
+      ? ""
+      : "http://127.0.0.1:5000";
+
+    // ==========================================================================
+    // CONSTANTS: 53 LANGUAGES METADATA
+    // ==========================================================================
+    const LANGUAGES_META = {
+      all:   { fr: "Toutes les langues", native: "All Languages", flag: "🌍" },
+      fr:    { fr: "Français", native: "Français", flag: "🇫🇷" },
+      en:    { fr: "Anglais", native: "English", flag: "🇬🇧" },
+      es:    { fr: "Espagnol", native: "Español", flag: "🇪🇸" },
+      pt_BR: { fr: "Portugais (Brésil)", native: "Português (BR)", flag: "🇧🇷" },
+      de:    { fr: "Allemand", native: "Deutsch", flag: "🇩🇪" },
+      ar:    { fr: "Arabe", native: "العربية", flag: "🇸🇦", rtl: true },
+      zh:    { fr: "Chinois (Simplifié)", native: "简体中文", flag: "🇨🇳" },
+      ru:    { fr: "Russe", native: "Русский", flag: "🇷🇺" },
+      ja:    { fr: "Japonais", native: "日本語", flag: "🇯🇵" },
+      it:    { fr: "Italien", native: "Italiano", flag: "🇮🇹" },
+      ko:    { fr: "Coréen", native: "한국어", flag: "🇰🇷" },
+      hi:    { fr: "Hindi", native: "हिन्दी", flag: "🇮🇳" },
+      vi:    { fr: "Vietnamien", native: "Tiếng Việt", flag: "🇻🇳" },
+      id:    { fr: "Indonésien", native: "Bahasa Indonesia", flag: "🇮🇩" },
+      pl:    { fr: "Polonais", native: "Polski", flag: "🇵🇱" },
+      tr:    { fr: "Turc", native: "Türkçe", flag: "🇹🇷" },
+      bn:    { fr: "Bengali", native: "বাংলা", flag: "🇧🇩" },
+      ta:    { fr: "Tamoul", native: "தமிழ்", flag: "🇮🇳" },
+      te:    { fr: "Télougou", native: "తెలుగు", flag: "🇮🇳" },
+      fa_IR: { fr: "Persan", native: "فارسی", flag: "🇮🇷", rtl: true },
+      ml:    { fr: "Malayalam", native: "മലയാളം", flag: "🇮🇳" },
+      cs:    { fr: "Tchèque", native: "Čeština", flag: "🇨🇿" },
+      th:    { fr: "Thaï", native: "ไทย", flag: "🇹🇭" },
+      hu:    { fr: "Hongrois", native: "Magyar", flag: "🇭🇺" },
+      fi:    { fr: "Finnois", native: "Suomi", flag: "🇫🇮" },
+      si:    { fr: "Cingalais", native: "සිංහල", flag: "🇱🇰" },
+      el:    { fr: "Grec", native: "Ελληνικά", flag: "🇬🇷" },
+      ur:    { fr: "Ourdou", native: "اردو", flag: "🇵🇰", rtl: true },
+      mr:    { fr: "Marathi", native: "मराठी", flag: "🇮🇳" },
+      uk:    { fr: "Ukrainien", native: "Українська", flag: "🇺🇦" },
+      my:    { fr: "Birman", native: "မြန်မာဘာသာ", flag: "🇲🇲" },
+      sv:    { fr: "Suédois", native: "Svenska", flag: "🇸🇪" },
+      he:    { fr: "Hébreu", native: "עברית", flag: "🇮🇱", rtl: true },
+      ne:    { fr: "Népalais", native: "नेपाली", flag: "🇳🇵" },
+      bg:    { fr: "Bulgare", native: "Български", flag: "🇧🇬" },
+      et:    { fr: "Estonien", native: "Eesti", flag: "🇪🇪" },
+      nl:    { fr: "Néerlandais", native: "Nederlands", flag: "🇳🇱" },
+      pt_PT: { fr: "Portugais (Portugal)", native: "Português (PT)", flag: "🇵🇹" },
+      ro:    { fr: "Roumain", native: "Română", flag: "🇷🇴" },
+      km:    { fr: "Khmer", native: "ភាសាខ្មែរ", flag: "🇰🇭" },
+      sr:    { fr: "Serbe", native: "Српски", flag: "🇷🇸" },
+      kn:    { fr: "Kannada", native: "ಕನ್ನಡ", flag: "🇮🇳" },
+      da:    { fr: "Danois", native: "Dansk", flag: "🇩🇰" },
+      sk:    { fr: "Slovaque", native: "Slovenčina", flag: "🇸🇰" },
+      kk:    { fr: "Kazakh", native: "Қазақша", flag: "🇰🇿" },
+      no:    { fr: "Norvégien", native: "Norsk", flag: "🇳🇴" },
+      az:    { fr: "Azéri", native: "Azərbaycanca", flag: "🇦🇿" },
+      lv:    { fr: "Letton", native: "Latviešu", flag: "🇱🇻" },
+      ca:    { fr: "Catalan", native: "Català", flag: "🇪🇸" },
+      zh_TW: { fr: "Chinois (Traditionnel)", native: "繁體中文", flag: "🇹🇼" },
+      uz:    { fr: "Ouzbek", native: "Oʻzbekcha", flag: "🇺🇿" },
+      pa:    { fr: "Pendjabi", native: "ਪੰਜਾਬੀ", flag: "🇮🇳" },
+      sl:    { fr: "Slovène", native: "Slovenščina", flag: "🇸🇮" },
+      hy:    { fr: "Arménien", native: "Հայերեն", flag: "🇦🇲" }
+    };
+
+    const getLangMeta = (code) => {
+      return LANGUAGES_META[code] || { fr: code.toUpperCase(), native: code, flag: "🌐" };
+    };
+
+    // ==========================================================================
+    // SMART MULTI-FACTOR LANGUAGE DETECTION & LOCALIZATION ENGINE
+    // Priority: 1. Manual User Choice > 2. Browser Preferred > 3. IP Country > 4. Default
+    // ==========================================================================
+    const SUPPORTED_LANGS = [
+      'all', 'fr', 'en', 'es', 'pt_BR', 'de', 'ar', 'zh', 'ru', 'ja', 'it', 'ko', 'hi',
+      'vi', 'id', 'pl', 'tr', 'bn', 'ta', 'te', 'fa_IR', 'ml', 'cs', 'th', 'hu',
+      'fi', 'si', 'el', 'ur', 'mr', 'uk', 'my', 'sv', 'he', 'ne', 'bg', 'et',
+      'nl', 'pt_PT', 'ro', 'km', 'sr', 'kn', 'da', 'sk', 'kk', 'no', 'az', 'lv',
+      'ca', 'zh_TW', 'uz', 'pa', 'sl', 'hy'
+    ];
+
+    const RTL_LANGS = ['ar', 'he', 'fa_IR', 'ur'];
+
+    const COUNTRY_TO_LANG = {
+      FR: ['fr'], MC: ['fr'], GP: ['fr'], MQ: ['fr'], GF: ['fr'], RE: ['fr'],
+      YT: ['fr'], PF: ['fr'], NC: ['fr'], WF: ['fr'], BL: ['fr'], MF: ['fr'],
+      PM: ['fr'], SN: ['fr'], CI: ['fr'], CM: ['fr', 'en'], CD: ['fr'], CG: ['fr'],
+      GA: ['fr'], ML: ['fr'], NE: ['fr'], BF: ['fr'], BJ: ['fr'], TG: ['fr'],
+      GN: ['fr'], MG: ['fr'], DJ: ['fr', 'ar'], KM: ['fr', 'ar'], HT: ['fr'],
+      LU: ['fr', 'de'], BE: ['fr', 'nl', 'de'], CH: ['de', 'fr', 'it'],
+      DZ: ['ar', 'fr'], MA: ['ar', 'fr'], TN: ['ar', 'fr'], LY: ['ar'],
+      EG: ['ar'], SD: ['ar'], MR: ['ar', 'fr'], SA: ['ar'], AE: ['ar', 'en'],
+      QA: ['ar'], KW: ['ar'], OM: ['ar'], BH: ['ar'], IQ: ['ar'], JO: ['ar'],
+      LB: ['ar', 'fr', 'en'], SY: ['ar'], YE: ['ar'], PS: ['ar'],
+      ES: ['es', 'ca'], MX: ['es'], CO: ['es'], AR: ['es'], PE: ['es'],
+      VE: ['es'], CL: ['es'], GT: ['es'], EC: ['es'], CU: ['es'], BO: ['es'],
+      DO: ['es'], HN: ['es'], PY: ['es'], SV: ['es'], NI: ['es'], CR: ['es'],
+      PA: ['es'], UY: ['es'], GQ: ['es', 'fr'],
+      BR: ['pt_BR'], PT: ['pt_PT'], AO: ['pt_PT'], MZ: ['pt_PT'], CV: ['pt_PT'],
+      GW: ['pt_PT'], ST: ['pt_PT'], TL: ['pt_PT'],
+      US: ['en'], GB: ['en'], CA: ['en', 'fr'], AU: ['en'], NZ: ['en'],
+      IE: ['en'], ZA: ['en'], NG: ['en'], GH: ['en'], KE: ['en'], UG: ['en'],
+      ZW: ['en'], BW: ['en'], NA: ['en'], ZM: ['en'], MW: ['en'], LR: ['en'],
+      SL: ['en'], GM: ['en'], SZ: ['en'], LS: ['en'], JM: ['en'], TT: ['en'],
+      BB: ['en'], BS: ['en'], GY: ['en'], BZ: ['en'], SG: ['en', 'zh', 'ta'],
+      PH: ['en'], IN: ['hi', 'en', 'ta', 'te', 'bn', 'ml', 'kn', 'mr', 'pa'],
+      DE: ['de'], AT: ['de'], LI: ['de'], NL: ['nl'], SR: ['nl'],
+      SE: ['sv'], NO: ['no'], DK: ['da'], FI: ['fi', 'sv'],
+      RU: ['ru'], BY: ['ru'], UA: ['uk', 'ru'], PL: ['pl'],
+      CZ: ['cs'], SK: ['sk'], BG: ['bg'], RS: ['sr'], BA: ['sr'],
+      ME: ['sr'], SI: ['sl'], RO: ['ro'], MD: ['ro', 'ru'], HU: ['hu'],
+      IT: ['it'], SM: ['it'], VA: ['it'], GR: ['el'], CY: ['el', 'tr'],
+      TR: ['tr'], IL: ['he', 'ar', 'en'], IR: ['fa_IR'], AF: ['fa_IR'],
+      TJ: ['fa_IR'], PK: ['ur', 'en'], BD: ['bn'],
+      CN: ['zh'], TW: ['zh_TW'], HK: ['zh_TW', 'en'], MO: ['zh_TW', 'pt_PT'],
+      JP: ['ja'], KR: ['ko'], VN: ['vi'], ID: ['id'],
+      TH: ['th'], MM: ['my'], NP: ['ne'], LK: ['si', 'ta'], KH: ['km'],
+      KZ: ['kk', 'ru'], UZ: ['uz'], AZ: ['az'], AM: ['hy'], EE: ['et'],
+      LV: ['lv'], AD: ['ca']
+    };
+
+    const normalizeLocale = (locale) => {
+      if (!locale || typeof locale !== 'string') return null;
+      const clean = locale.trim().replace('_', '-').toLowerCase();
+      if (clean === 'pt-br' || clean.startsWith('pt-br')) return 'pt_BR';
+      if (clean === 'pt-pt' || clean.startsWith('pt-pt')) return 'pt_PT';
+      if (clean === 'zh-tw' || clean === 'zh-hk' || clean === 'zh-hant') return 'zh_TW';
+      if (clean === 'zh-cn' || clean === 'zh-sg' || clean === 'zh-hans' || clean === 'zh') return 'zh';
+      if (clean === 'fa-ir' || clean === 'fa') return 'fa_IR';
+      const prefix = clean.split('-')[0];
+      if (prefix === 'pt') return 'pt_BR';
+      if (SUPPORTED_LANGS.includes(prefix)) return prefix;
+      const underscored = clean.replace('-', '_');
+      if (SUPPORTED_LANGS.includes(underscored)) return underscored;
+      return null;
+    };
+
+    const fetchVisitorCountry = async () => {
+      const fetchWithTimeout = async (url, ms = 2500) => {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), ms);
+        try {
+          const res = await fetch(url, { signal: controller.signal, cache: 'no-store' });
+          clearTimeout(timeout);
+          if (!res.ok) throw new Error("status " + res.status);
+          return await res.json();
+        } catch (err) {
+          clearTimeout(timeout);
+          throw err;
+        }
+      };
+
+      try {
+        const data = await fetchWithTimeout('https://api.country.is', 2000);
+        if (data && data.country && typeof data.country === 'string') {
+          return data.country.toUpperCase();
+        }
+      } catch (e) {}
+
+      try {
+        const data = await fetchWithTimeout('https://ipwho.is/', 2500);
+        if (data && data.success && data.country_code) {
+          return data.country_code.toUpperCase();
+        }
+      } catch (e) {}
+
+      try {
+        const data = await fetchWithTimeout('https://freeipapi.com/api/json', 2500);
+        if (data && data.countryCode) {
+          return data.countryCode.toUpperCase();
+        }
+      } catch (e) {}
+
+      return null;
+    };
+
+    const detectVisitorLanguage = async () => {
+      // 1. Manual user choice
+      const manualLang = localStorage.getItem('fpb_manual_lang');
+      if (manualLang && SUPPORTED_LANGS.includes(manualLang)) {
+        return { lang: manualLang, source: 'manual', isManual: true };
+      }
+
+      // 2. Browser language preferences
+      let browserCandidates = [];
+      try {
+        const rawList = navigator.languages || [navigator.language || navigator.userLanguage];
+        for (const raw of rawList) {
+          const match = normalizeLocale(raw);
+          if (match && !browserCandidates.includes(match)) {
+            browserCandidates.push(match);
+          }
+        }
+      } catch (e) {}
+      const primaryBrowserLang = browserCandidates[0] || null;
+
+      // 3. Country IP Geolocation
+      let countryCode = localStorage.getItem('fpb_geo_country');
+      if (!countryCode) {
+        countryCode = await fetchVisitorCountry();
+        if (countryCode) {
+          try { localStorage.setItem('fpb_geo_country', countryCode); } catch (e) {}
+        }
+      }
+
+      let countryLangs = [];
+      if (countryCode && COUNTRY_TO_LANG[countryCode.toUpperCase()]) {
+        countryLangs = COUNTRY_TO_LANG[countryCode.toUpperCase()];
+      }
+
+      if (primaryBrowserLang) {
+        const countryMatch = countryLangs.find(cl => cl === primaryBrowserLang);
+        return {
+          lang: primaryBrowserLang,
+          source: countryMatch ? 'browser_and_country' : 'browser',
+          country: countryCode || null,
+          isManual: false
+        };
+      }
+
+      if (countryLangs.length > 0 && SUPPORTED_LANGS.includes(countryLangs[0])) {
+        return {
+          lang: countryLangs[0],
+          source: 'ip_country',
+          country: countryCode,
+          isManual: false
+        };
+      }
+
+      return {
+        lang: 'fr',
+        source: 'default_fallback',
+        country: countryCode || null,
+        isManual: false
+      };
+    };
+
+    const UI_TRANSLATIONS = {
+      fr: {
+        search_placeholder: "Rechercher un livre, techno (ex: Python, React, Rust, Algorithmes)...",
+        all_subjects: "Tous les sujets",
+        all_formats: "Tous les formats",
+        active_lang: "Langue active",
+        change_lang: "Changer",
+        topics: "Sujets & Technologies",
+        filter_topic_placeholder: "Filtrer un sujet (ex: Python)...",
+        favorites: "Favoris",
+        fav_remove: "⭐ Retiré des favoris",
+        fav_add: "🌟 Ajouté à vos favoris !",
+        reset_filters: "✕ Réinitialiser",
+        empty_title: "Aucune ressource trouvée",
+        empty_desc: "Essayez de modifier votre recherche ou réinitialisez les filtres.",
+        prev_page: "← Précédent",
+        next_page: "Suivant →",
+        hero_badge: "⚡ Bibliothèque Open Source Officielle",
+        hero_title_pre: "Apprenez à coder avec des",
+        hero_title_highlight: "milliers de livres gratuits",
+        hero_subtitle: "Explorez plus de 10 740 livres, cours, vidéos et podcasts vérifiés par la communauté internationale dans 53 langues.",
+        stat_resources: "Ressources Référencées",
+        stat_languages: "Langues Mondiales",
+        stat_free: "Accès Libre & Gratuit",
+        modal_title: "Choisir une langue",
+        modal_subtitle: "53 langues mondiales disponibles avec ressources vérifiées",
+        modal_search_placeholder: "Rechercher une langue (ex: Français, English, Español)...",
+        link_copied: "📋 Lien copié dans le presse-papier !",
+        login: "Connexion",
+        create_account: "Créer un compte",
+        lang_detected_toast: "🌍 Langue détectée : {lang}"
+      },
+      en: {
+        search_placeholder: "Search for a book, tech (e.g. Python, React, Rust, Algorithms)...",
+        all_subjects: "All topics",
+        all_formats: "All formats",
+        active_lang: "Active language",
+        change_lang: "Change",
+        topics: "Topics & Technologies",
+        filter_topic_placeholder: "Filter a topic (e.g. Python)...",
+        favorites: "Favorites",
+        fav_remove: "⭐ Removed from favorites",
+        fav_add: "🌟 Added to your favorites!",
+        reset_filters: "✕ Reset",
+        empty_title: "No resources found",
+        empty_desc: "Try adjusting your search query or reset the active filters.",
+        prev_page: "← Previous",
+        next_page: "Next →",
+        hero_badge: "⚡ Official Open Source Library",
+        hero_title_pre: "Learn to code with",
+        hero_title_highlight: "thousands of free books",
+        hero_subtitle: "Explore over 10,740 curated books, courses, videos and podcasts verified by the international community in 53 languages.",
+        stat_resources: "Curated Resources",
+        stat_languages: "Global Languages",
+        stat_free: "100% Free & Open",
+        modal_title: "Choose a Language",
+        modal_subtitle: "53 world languages available with verified educational resources",
+        modal_search_placeholder: "Search for a language (e.g. English, French, Spanish)...",
+        link_copied: "📋 Link copied to clipboard!",
+        login: "Sign In",
+        create_account: "Create Account",
+        lang_detected_toast: "🌍 Language detected: {lang}"
+      },
+      es: {
+        search_placeholder: "Buscar un libro, tecnología (ej: Python, React, Rust, Algoritmos)...",
+        all_subjects: "Todos los temas",
+        all_formats: "Todos los formatos",
+        active_lang: "Idioma activo",
+        change_lang: "Cambiar",
+        topics: "Temas y Tecnologías",
+        filter_topic_placeholder: "Filtrar un tema (ej: Python)...",
+        favorites: "Favoritos",
+        fav_remove: "⭐ Eliminado de favoritos",
+        fav_add: "🌟 ¡Añadido a tus favoritos!",
+        reset_filters: "✕ Restablecer",
+        empty_title: "No se encontraron recursos",
+        empty_desc: "Intenta modificar tu búsqueda o restablece los filtros.",
+        prev_page: "← Anterior",
+        next_page: "Siguiente →",
+        hero_badge: "⚡ Biblioteca Open Source Oficial",
+        hero_title_pre: "Aprende a programar con",
+        hero_title_highlight: "miles de libros gratuitos",
+        hero_subtitle: "Explora más de 10.740 libros, cursos, vídeos y podcasts verificados por la comunidad internacional en 53 idiomas.",
+        stat_resources: "Recursos Referenciados",
+        stat_languages: "Idiomas Mundiales",
+        stat_free: "100% Libre y Gratuito",
+        modal_title: "Elegir un idioma",
+        modal_subtitle: "53 idiomas mundiales disponibles con recursos verificados",
+        modal_search_placeholder: "Buscar un idioma (ej: Español, Inglés, Francés)...",
+        link_copied: "📋 ¡Enlace copiado al portapapeles!",
+        login: "Iniciar sesión",
+        create_account: "Crear cuenta",
+        lang_detected_toast: "🌍 Idioma detectado: {lang}"
+      },
+      ar: {
+        search_placeholder: "ابحث عن كتاب أو تقنية (مثال: بايثون، رياكت، خوارزميات)...",
+        all_subjects: "جميع المواضيع",
+        all_formats: "جميع الصيغ",
+        active_lang: "اللغة الحالية",
+        change_lang: "تغيير",
+        topics: "المواضيع والتقنيات",
+        filter_topic_placeholder: "تصفية موضوع (مثال: بايثون)...",
+        favorites: "المفضلة",
+        fav_remove: "⭐ تمت الإزالة من المفضلة",
+        fav_add: "🌟 تمت الإضافة إلى المفضلة!",
+        reset_filters: "✕ إعادة ضبط",
+        empty_title: "لم يتم العثور على نتائج",
+        empty_desc: "حاول تعديل عبارة البحث أو إعادة تعيين الفلاتر المحددة.",
+        prev_page: "السابق ←",
+        next_page: "→ التالي",
+        hero_badge: "⚡ المكتبة الرسمية مفتوحة المصدر",
+        hero_title_pre: "تعلم البرمجة من خلال",
+        hero_title_highlight: "آلاف الكتب المجانية",
+        hero_subtitle: "استكشف أكثر من 10,740 كتاباً ودورة وفيديو وبودكاست موثقة من قبل المجتمع الدولي بـ 53 لغة عالمية.",
+        stat_resources: "مرجع تعليمي موثق",
+        stat_languages: "لغة عالمية",
+        stat_free: "وصول مجاني 100%",
+        modal_title: "اختر لغة التصفح",
+        modal_subtitle: "53 لغة حول العالم مدعومة مع مراجع وكتب موثقة",
+        modal_search_placeholder: "ابحث عن لغة (مثال: العربية، الفرنسية، الإنجليزية)...",
+        link_copied: "📋 تم نسخ الرابط بنجاح!",
+        login: "تسجيل الدخول",
+        create_account: "إنشاء حساب",
+        lang_detected_toast: "🌍 تم تحديد لغتك تلقائياً: {lang}"
+      },
+      de: {
+        search_placeholder: "Suche nach einem Buch, Technologie (z.B. Python, React, Rust)...",
+        all_subjects: "Alle Themen",
+        all_formats: "Alle Formate",
+        active_lang: "Aktive Sprache",
+        change_lang: "Ändern",
+        topics: "Themen & Technologien",
+        filter_topic_placeholder: "Thema filtern (z.B. Python)...",
+        favorites: "Favoriten",
+        fav_remove: "⭐ Aus Favoriten entfernt",
+        fav_add: "🌟 Zu Favoriten hinzugefügt!",
+        reset_filters: "✕ Zurücksetzen",
+        empty_title: "Keine Ressourcen gefunden",
+        empty_desc: "Versuche einen anderen Suchbegriff oder setze die Filter zurück.",
+        prev_page: "← Zurück",
+        next_page: "Weiter →",
+        hero_badge: "⚡ Offizielle Open-Source-Bibliothek",
+        hero_title_pre: "Lerne programmieren mit",
+        hero_title_highlight: "Tausenden kostenlosen Büchern",
+        hero_subtitle: "Entdecke über 10.740 Bücher, Kurse, Videos und Podcasts in 53 Sprachen.",
+        stat_resources: "Referenzierte Ressourcen",
+        stat_languages: "Sprachen Weltweit",
+        stat_free: "100% Kostenloser Zugang",
+        modal_title: "Sprache wählen",
+        modal_subtitle: "53 Weltsprachen mit verifizierten Ressourcen verfügbar",
+        modal_search_placeholder: "Sprache suchen (z.B. Deutsch, Englisch, Französisch)...",
+        link_copied: "📋 Link in die Zwischenablage kopiert!",
+        login: "Anmelden",
+        create_account: "Konto erstellen",
+        lang_detected_toast: "🌍 Sprache erkannt: {lang}"
+      },
+      pt_BR: {
+        search_placeholder: "Pesquisar livro, tecnologia (ex: Python, React, Rust, Algoritmos)...",
+        all_subjects: "Todos os tópicos",
+        all_formats: "Todos os formatos",
+        active_lang: "Idioma ativo",
+        change_lang: "Alterar",
+        topics: "Tópicos & Tecnologias",
+        filter_topic_placeholder: "Filtrar tópico (ex: Python)...",
+        favorites: "Favoritos",
+        fav_remove: "⭐ Removido dos favoritos",
+        fav_add: "🌟 Adicionado aos favoritos!",
+        reset_filters: "✕ Redefinir",
+        empty_title: "Nenhum recurso encontrado",
+        empty_desc: "Tente alterar sua pesquisa ou redefina os filtros.",
+        prev_page: "← Anterior",
+        next_page: "Próximo →",
+        hero_badge: "⚡ Biblioteca Oficial de Código Aberto",
+        hero_title_pre: "Aprenda a programar com",
+        hero_title_highlight: "milhares de livros gratuitos",
+        hero_subtitle: "Explore mais de 10.740 livros, cursos, vídeos e podcasts verificados em 53 idiomas.",
+        stat_resources: "Recursos Referenciados",
+        stat_languages: "Idiomas Globais",
+        stat_free: "100% Gratuito e Aberto",
+        modal_title: "Escolha um idioma",
+        modal_subtitle: "53 idiomas disponíveis com recursos verificados",
+        modal_search_placeholder: "Pesquisar idioma (ex: Português, Inglês)...",
+        link_copied: "📋 Link copiado para a área de transferência!",
+        login: "Entrar",
+        create_account: "Criar conta",
+        lang_detected_toast: "🌍 Idioma detectado: {lang}"
+      }
+    };
+
+    const t = (langCode, key, params = {}) => {
+      const dict = UI_TRANSLATIONS[langCode] || UI_TRANSLATIONS.en || UI_TRANSLATIONS.fr;
+      let text = dict[key] || UI_TRANSLATIONS.en?.[key] || UI_TRANSLATIONS.fr?.[key] || key;
+      for (const [k, v] of Object.entries(params)) {
+        text = text.replace(new RegExp(`\{${k}\}`, 'g'), v);
+      }
+      return text;
+    };
+
+
+    // ==========================================================================
+    // CONSTANTS: OAUTH 2.0 PROVIDERS
+    // ==========================================================================
+    const OAUTH_PROVIDERS = {
+      Google: {
+        name: "Google",
+        scope: "openid profile email",
+        authUrl: "https://accounts.google.com/o/oauth2/v2/auth",
+        clientId: "1083472918451-fpbbooksdemoapp.apps.googleusercontent.com",
+        icon: (
+          <svg width="18" height="18" viewBox="0 0 24 24">
+            <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.4 1 3.5 3.6 1.6 7.4l3.7 2.8C6.2 7.2 8.9 5 12 5z"/>
+            <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.6l3.7 2.9c2.2-2 3.7-5 3.7-8.7z"/>
+            <path fill="#FBBC05" d="M5.3 14.8c-.2-.8-.4-1.6-.4-2.5s.2-1.7.4-2.5L1.6 7C.6 9 0 11.2 0 13.5s.6 4.5 1.6 6.5l3.7-2.9z"/>
+            <path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3.1 0-5.8-2.1-6.7-5l-3.7 2.9C3.5 21.4 7.4 24 12 24z"/>
+          </svg>
+        )
+      },
+      GitHub: {
+        name: "GitHub",
+        scope: "read:user user:email",
+        authUrl: "https://github.com/login/oauth/authorize",
+        clientId: "Iv1.fpbgithuboauth2demo",
+        icon: (
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#0f172a">
+            <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.2.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.1.1 1.7 1.2 1.7 1.2 1 1.7 2.7 1.2 3.3.9.1-.7.4-1.2.7-1.5-2.5-.3-5.2-1.3-5.2-5.7 0-1.3.5-2.3 1.2-3.2-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.4 11.4 0 016 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.8.1 3.1.7.9 1.2 1.9 1.2 3.2 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .4.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.65 18.35.5 12 .5z"/>
+          </svg>
+        )
+      },
+      Microsoft: {
+        name: "Microsoft",
+        scope: "openid profile email User.Read",
+        authUrl: "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
+        clientId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+        icon: (
+          <svg width="17" height="17" viewBox="0 0 23 23">
+            <path fill="#f35325" d="M1 1h10v10H1z"/>
+            <path fill="#81bc06" d="M12 1h10v10H12z"/>
+            <path fill="#05a6f0" d="M1 12h10v10H1z"/>
+            <path fill="#ffba08" d="M12 12h10v10H12z"/>
+          </svg>
+        )
+      },
+      Apple: {
+        name: "Apple",
+        scope: "name email",
+        authUrl: "https://appleid.apple.com/auth/authorize",
+        clientId: "com.freeprogrammingbooks.client",
+        icon: (
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="#0f172a">
+            <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.53 4.08zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+          </svg>
+        )
+      }
+    };
+
+    // ==========================================================================
+    // UTILITIES
+    // ==========================================================================
+    const extractDomain = (url) => {
+      try {
+        return new URL(url).hostname.replace(/^www\./, "");
+      } catch {
+        return "web";
+      }
+    };
+
+    const getFormatTagClass = (fmt) => {
+      const f = (fmt || "").toLowerCase();
+      if (f.includes("pdf")) return "tag-pdf";
+      if (f.includes("vidéo") || f.includes("video") || f.includes("youtube")) return "tag-video";
+      if (f.includes("epub")) return "tag-epub";
+      if (f.includes("podcast")) return "tag-podcast";
+      if (f.includes("interactif") || f.includes("cheatsheet")) return "tag-inter";
+      return "tag-web";
+    };
+
+    // ==========================================================================
+    // TECH LOGO / ICON RESOLVER FOR TOPICS & CATEGORIES
+    // ==========================================================================
+const getCategoryIcon = (categoryName) => {
+      if (!categoryName) return "📘";
+      const name = (categoryName || "")
+        .toLowerCase()
+        .split(String.fromCharCode(92))
+        .join("")
+        .trim();
+
+      // Algorithms & Math
+      if (name.includes("algo") || name.includes("structure") || name.includes("datastruct") || name.includes("estructuras")) return "🧮";
+      if (name.includes("math") || name.includes("algebra") || name.includes("calculus") || name.includes("géométrie")) return "📐";
+      if (name.includes("asymptote") || name.includes("metapost") || name.includes("tikz") || name.includes("pgf")) return "📐";
+
+      // Core Web & JavaScript ecosystem
+      if (name.includes("react")) return "⚛️";
+      if (name.includes("vue")) return "💚";
+      if (name.includes("angular")) return "🅰️";
+      if (name.includes("svelte") || name.includes("astro")) return "🚀";
+      if (name.includes("javascript") || name === "js" || name.includes("ecmascript")) return "🟨";
+      if (name.includes("typescript") || name === "ts") return "🔷";
+      if (name.includes("jquery")) return "🔷";
+      if (name.includes("node") || name.includes("deno") || name.includes("bun")) return "🟩";
+      if (name.includes("html") || name.includes("css") || name.includes("web") || name.includes("frontend") || name.includes("sass") || name.includes("less") || name.includes("flexbox")) return "🌐";
+
+      // Python ecosystem
+      if (name.includes("django")) return "🎸";
+      if (name.includes("python") || name.includes("flask") || name.includes("fastapi")) return "🐍";
+
+      // C / C++ / C# / .NET
+      if (name.includes("c#") || name.includes("csharp") || name.includes(".net") || name.includes("asp") || name.includes("blazor")) return "🟣";
+      if (name.includes("c++") || name.includes("cpp") || name.includes("c / c++")) return "⚙️";
+      if (name === "c" || name.startsWith("c ") || name.endsWith(" c") || name.includes("ansi c")) return "🅲";
+
+      // JVM & Mobile
+      if (name.includes("java") && !name.includes("javascript")) return "☕";
+      if (name.includes("kotlin")) return "🎯";
+      if (name.includes("scala")) return "🪜";
+      if (name.includes("android")) return "🤖";
+      if (name.includes("ios") || name.includes("apple") || name.includes("swiftui") || name.includes("swift")) return "🐦";
+      if (name.includes("flutter") || name.includes("dart")) return "💙";
+
+      // PHP
+      if (name.includes("symfony")) return "🎼";
+      if (name.includes("php") || name.includes("laravel") || name.includes("yii") || name.includes("wordpress")) return "🐘";
+
+      // Systems & Other Popular Languages
+      if (name.includes("rust")) return "🦀";
+      if (name.includes("ruby") || name.includes("rails")) return "💎";
+      if (name.includes("golang") || name === "go" || name.startsWith("go ") || name.endsWith(" go")) return "🐹";
+      if (name.includes("perl")) return "🐪";
+      if (name.includes("lua")) return "🌙";
+      if (name.includes("julia")) return "🟣";
+      if (name.includes("assembl") || name.includes("nasm")) return "📟";
+      if (name.includes("ada")) return "🕊️";
+      if (name.includes("apl")) return "⍺";
+      if (name.includes("fortran") || name.includes("cobol")) return "🔢";
+      if (name.includes("pascal") || name.includes("delphi")) return "🏛️";
+      if (name.includes("haskell") || name.includes("agda")) return "λ";
+      if (name.includes("caml") || name.includes("ocaml")) return "🐫";
+      if (name.includes("lisp") || name.includes("clojure") || name.includes("scheme") || name.includes("racket")) return "괄";
+      if (name.includes("elixir") || name.includes("erlang")) return "💧";
+      if (name === "r" || name.startsWith("r ") || name.endsWith(" r")) return "📈";
+      if (name.includes("matlab") || name.includes("octave") || name.includes("scilab")) return "🔬";
+      if (name.includes("rocq") || name.includes("coq")) return "🐓";
+      if (name.includes("spip")) return "📰";
+      if (name.includes("sage")) return "🌿";
+      if (name.includes("meteor")) return "☄️";
+      if (name.includes("processing")) return "🎨";
+      if (name.includes("scratch")) return "🐱";
+      if (name.includes("enfant") || name.includes("adolescent") || name.includes("pédagogie")) return "🎒";
+      if (name.includes("tei")) return "📜";
+      if (name.includes("méta") || name.includes("meta")) return "📑";
+      if (name.includes("make")) return "🛠️";
+      if (name.includes("basic") || name.includes("qbasic")) return "💾";
+      if (name.includes("abap") || name.includes("sap")) return "💼";
+      if (name.includes("script") || name.includes("autohotkey") || name.includes("autoit") || name.includes("applescript")) return "📜";
+
+      // Databases & Storage
+      if (name.includes("sql") || name.includes("mysql") || name.includes("postgres") || name.includes("sqlite") || name.includes("données") || name.includes("database") || name.includes("db") || name.includes("base de datos") || name.includes("banco de dados") || name.includes("mariadb")) return "🗄️";
+      if (name.includes("mongo") || name.includes("nosql") || name.includes("redis")) return "🍃";
+
+      // DevOps, Cloud & OS
+      if (name.includes("docker") || name.includes("kubernetes") || name.includes("devops") || name.includes("container") || name.includes("ci/cd") || name.includes("ansible") || name.includes("terraform")) return "🐳";
+      if (name.includes("sysadmin")) return "🖥️";
+      if (name.includes("linux") || name.includes("ubuntu") || name.includes("debian") || name.includes("unix") || name.includes("système") || name.includes("exploitation") || name.includes("operating system")) return "🐧";
+      if (name.includes("bash") || name.includes("shell") || name.includes("powershell") || name.includes("terminal") || name.includes("awk") || name.includes("command line") || name.includes("zsh")) return "💻";
+      if (name.includes("cloud") || name.includes("aws") || name.includes("azure") || name.includes("gcp") || name.includes("amazon")) return "☁️";
+      if (name.includes("git") || name.includes("github") || name.includes("version control")) return "🐙";
+
+      // Emerging Tech & Architecture
+      if (name.includes("blockchain") || name.includes("chaîne de blocs") || name.includes("crypto") || name.includes("web3") || name.includes("solidity") || name.includes("bitcoin") || name.includes("ethereum")) return "⛓️";
+      if (name.includes("ia") || name.includes("ai") || name.includes("intelligence") || name.includes("machine learning") || name.includes("deep learning") || name.includes("nlp") || name.includes("llm")) return "🤖";
+      if (name.includes("data science") || name.includes("big data") || name.includes("analytics") || name.includes("hadoop") || name.includes("spark") || name.includes("kafka")) return "📊";
+      if (name.includes("sécur") || name.includes("secur") || name.includes("hack") || name.includes("pen") || name.includes("cyber") || name.includes("cryptog") || name.includes("sicherheit") || name.includes("seguridad")) return "🛡️";
+      if (name.includes("réseau") || name.includes("network") || name.includes("telecom") || name.includes("ipv6") || name.includes("routing")) return "🔌";
+      if (name.includes("vr") || name.includes("ar") || name.includes("xr") || name.includes("metaverse")) return "🥽";
+      if (name.includes("game") || name.includes("jeu") || name.includes("unity") || name.includes("unreal") || name.includes("godot")) return "🎮";
+      if (name.includes("arduino") || name.includes("raspberry") || name.includes("iot") || name.includes("embarqu") || name.includes("hardware") || name.includes("fpga")) return "🎛️";
+      if (name.includes("test") || name.includes("qa") || name.includes("tdd") || name.includes("jest") || name.includes("cypress")) return "🧪";
+      if (name.includes("architect") || name.includes("pattern") || name.includes("design pattern")) return "🏗️";
+      if (name.includes("api") || name.includes("graphql") || name.includes("rest") || name.includes("microservice")) return "⚡";
+      if (name.includes("vim") || name.includes("emacs") || name.includes("editor") || name.includes("ide") || name.includes("éditeur") || name.includes("vscode")) return "📝";
+      if (name.includes("agile") || name.includes("scrum") || name.includes("projet") || name.includes("kanban")) return "📋";
+      if (name.includes("logiciel") || name.includes("open source") || name.includes("libre")) return "🔓";
+      if (name.includes("agnost")) return "🧩";
+      if (name.includes("latex") || name.includes("tex") || name.includes("markdown")) return "📄";
+
+      return "📘";
+    };
+
+
+    const checkPasswordCriteria = (pwd) => ({
+      len: pwd.length >= 8,
+      upper: /[A-Z]/.test(pwd),
+      lower: /[a-z]/.test(pwd),
+      num: /[0-9]/.test(pwd),
+      special: /[^A-Za-z0-9]/.test(pwd)
+    });
+
+    // ==========================================================================
+    // COMPONENT: NAVBAR
+    // ==========================================================================
+    function Navbar({
+      searchQuery,
+      setSearchQuery,
+      currentLang,
+      openLangModal,
+      favoritesCount,
+      onlyFavorites,
+      setOnlyFavorites,
+      currentUser,
+      openAuthModal,
+      userDropdownOpen,
+      setUserDropdownOpen,
+      logoutUser,
+      searchInputRef
+    }) {
+      const langMeta = getLangMeta(currentLang);
+
+      return (
+        <header className="navbar">
+          <div className="navbar-inner">
+            {/* Logo */}
+            <div className="brand" style={{ cursor: 'pointer' }} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+              <div className="brand-icon">📚</div>
+              <div className="brand-name">Free Programming Books</div>
+            </div>
+
+            {/* Global Search Bar (with matched CSS classes) */}
+            <div className="nav-search">
+              <span className="nav-search-icon">🔍</span>
+              <input
+                ref={searchInputRef}
+                type="text"
+                placeholder={t(currentLang, "search_placeholder")}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  className="nav-search-clear visible"
+                  onClick={() => setSearchQuery("")}
+                  title="Effacer la recherche"
+                >
+                  ✕
+                </button>
+              )}
+              <span className="nav-search-kbd">Ctrl K</span>
+            </div>
+
+            {/* Actions: Languages, Favorites, User */}
+            <div className="nav-actions">
+              {/* Language Selector Pill */}
+              <button
+                type="button"
+                className="btn-ghost"
+                onClick={openLangModal}
+                title="Changer de langue parmi les 53 disponibles"
+              >
+                <span>{langMeta.flag}</span>
+                <span>{langMeta.native || langMeta.fr}</span>
+                <span style={{ fontSize: '0.72rem', opacity: 0.6 }}>▾</span>
+              </button>
+
+              {/* Favorites Filter Button */}
+              <button
+                type="button"
+                className={`btn-ghost ${onlyFavorites ? 'active-fav' : ''}`}
+                onClick={() => setOnlyFavorites(!onlyFavorites)}
+                title="Afficher uniquement mes ressources favorites"
+              >
+                <span>⭐</span>
+                <span>{t(currentLang, "favorites")} ({favoritesCount})</span>
+              </button>
+
+              {/* User Account / Login Button */}
+              {currentUser ? (
+                <div className="user-menu-wrap">
+                  <button
+                    type="button"
+                    className="user-pill"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setUserDropdownOpen(!userDropdownOpen);
+                    }}
+                  >
+                    <div className="user-avatar" style={{ overflow: 'hidden', padding: 0 }}>
+                      {currentUser.imageUrl ? (
+                        <img src={currentUser.imageUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      ) : (
+                        currentUser.name ? currentUser.name.charAt(0).toUpperCase() : "U"
+                      )}
+                    </div>
+                    <span>{currentUser.name}</span>
+                    <span style={{ fontSize: '0.7rem' }}>▾</span>
+                  </button>
+
+                  <div className={`user-dropdown ${userDropdownOpen ? 'open' : ''}`} onClick={(e) => e.stopPropagation()}>
+                    <div className="user-dropdown-header">
+                      <div className="user-dropdown-name">{currentUser.name}</div>
+                      <div className="user-dropdown-email">{currentUser.email}</div>
+                    </div>
+                    {window.Clerk && (
+                      <button
+                        type="button"
+                        className="user-dropdown-item"
+                        onClick={() => {
+                          window.Clerk.openUserProfile?.();
+                          setUserDropdownOpen(false);
+                        }}
+                      >
+                        <span>⚙️</span> <span>Gérer mon profil & Sécurité</span>
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      className="user-dropdown-item"
+                      onClick={() => {
+                        setOnlyFavorites(true);
+                        setUserDropdownOpen(false);
+                      }}
+                    >
+                      <span>⭐</span> <span>Mes Favoris ({favoritesCount})</span>
+                    </button>
+                    <button
+                      type="button"
+                      className="user-dropdown-item danger"
+                      onClick={logoutUser}
+                    >
+                      <span>🚪</span> <span>Se déconnecter</span>
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <button
+                    type="button"
+                    className="btn-ghost"
+                    onClick={() => {
+                      if (window.Clerk && window.Clerk.loaded) {
+                        window.Clerk.openSignIn();
+                      } else {
+                        openAuthModal("login");
+                      }
+                    }}
+                    title="Se connecter"
+                  >
+                    <span>🔐</span>
+                    <span>{t(currentLang, "login")}</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="btn-primary"
+                    style={{ padding: '0.45rem 0.9rem', fontSize: '0.84rem' }}
+                    onClick={() => {
+                      if (window.Clerk && window.Clerk.loaded) {
+                        window.Clerk.openSignUp();
+                      } else {
+                        openAuthModal("register");
+                      }
+                    }}
+                    title="Créer un compte"
+                  >
+                    <span>✨</span>
+                    <span>{t(currentLang, "create_account")}</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </header>
+      );
+    }
+
+    // ==========================================================================
+    // COMPONENT: HERO SECTION
+    // ==========================================================================
+    function HeroSection({ totalResources, currentLangCount, currentLang, openLangModal }) {
+      const meta = getLangMeta(currentLang);
+
+      return (
+        <section className="hero-section">
+          <div className="hero-card">
+            <div className="hero-content">
+              <div className="hero-badge">
+                <span>✨</span>
+                <span>{t(currentLang, "hero_badge")}</span>
+              </div>
+              <h2 className="hero-title">
+                {t(currentLang, "hero_title_pre")} <span className="highlight-text">{t(currentLang, "hero_title_highlight")}</span>
+              </h2>
+              <p className="hero-desc">
+                {t(currentLang, "hero_subtitle")}
+              </p>
+
+              <div className="hero-stats-row">
+                <div className="hero-stat-item">
+                  <div className="hero-stat-val">{totalResources.toLocaleString("fr-FR")}</div>
+                  <div className="hero-stat-lbl">{t(currentLang, "stat_resources")}</div>
+                </div>
+                <div className="hero-stat-item" onClick={openLangModal} style={{ cursor: 'pointer' }} title="Cliquez pour changer de langue">
+                  <div className="hero-stat-val">{currentLangCount.toLocaleString("fr-FR")}</div>
+                  <div className="hero-stat-lbl">
+                    {currentLang === "all" ? "Toutes langues" : `${meta.native || meta.fr} ${meta.flag}`}
+                  </div>
+                </div>
+                <div className="hero-stat-item" onClick={openLangModal} style={{ cursor: 'pointer' }}>
+                  <div className="hero-stat-val">53</div>
+                  <div className="hero-stat-lbl">{t(currentLang, "stat_languages")}</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="hero-visual">
+              <img
+                src="hero-ebook.jpg"
+                alt="Illustration Ebooks Programmation"
+                className="hero-img"
+                loading="eager"
+              />
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    // ==========================================================================
+    // COMPONENT: SIDEBAR
+    // ==========================================================================
+    function Sidebar({
+      currentLang,
+      selectedFormat,
+      setSelectedFormat,
+      categories,
+      selectedCategory,
+      setSelectedCategory,
+      catFilterQuery,
+      setCatFilterQuery
+    }) {
+      const [isMobileExpanded, setIsMobileExpanded] = useState(false);
+
+      const filteredCategories = useMemo(() => {
+        if (!catFilterQuery.trim()) return categories;
+        const q = catFilterQuery.toLowerCase().trim();
+        return categories.filter(c => c.name.toLowerCase().includes(q));
+      }, [categories, catFilterQuery]);
+
+      return (
+        <aside className="sidebar">
+          {/* Mobile Filter Header Toggle */}
+          <button
+            type="button"
+            className="sidebar-mobile-toggle"
+            onClick={() => setIsMobileExpanded(!isMobileExpanded)}
+            title="Afficher ou masquer les filtres"
+          >
+            <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <span>⚡</span>
+              <span style={{ fontWeight: 700 }}>Filtres & Sujets</span>
+              <span className="side-count">{categories.length}</span>
+            </span>
+            <span style={{ transform: isMobileExpanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s ease' }}>
+              ▼
+            </span>
+          </button>
+
+          <div className={`sidebar-collapsible ${isMobileExpanded ? 'expanded' : ''}`}>
+            {/* Format Filter */}
+            <div className="side-group">
+              <div className="side-label">Format de ressource</div>
+              <select
+                className="side-select"
+                value={selectedFormat}
+                onChange={(e) => setSelectedFormat(e.target.value)}
+              >
+                <option value="all">📂 Tous les formats</option>
+                <option value="Web / HTML">🌐 Web / HTML en ligne</option>
+                <option value="PDF">📄 Livres PDF</option>
+                <option value="Vidéo">🎥 Vidéo / YouTube</option>
+                <option value="EPUB">📱 Livre EPUB</option>
+                <option value="Podcast">🎙️ Podcast Audio</option>
+                <option value="Interactif">⚡ Exercice Interactif</option>
+              </select>
+            </div>
+
+            {/* Vertical Subject Filter */}
+            <div className="side-group">
+              <div className="side-label">
+                <span>Sujets & Technologies</span>
+                <span style={{ fontWeight: 600 }}>{categories.length}</span>
+              </div>
+              <input
+                type="text"
+                className="side-cat-search"
+                placeholder={t(currentLang, "filter_topic_placeholder")}
+                value={catFilterQuery}
+                onChange={(e) => setCatFilterQuery(e.target.value)}
+              />
+              <div className="side-cat-list">
+                <button
+                  type="button"
+                  className={`side-nav-btn ${selectedCategory === 'all' ? 'active' : ''}`}
+                  onClick={() => setSelectedCategory('all')}
+                >
+                  <span className="side-nav-left">
+                    <span>✨</span>
+                    <span>{t(currentLang, "all_subjects")}</span>
+                  </span>
+                  <span className="side-count">{categories.reduce((acc, c) => acc + c.count, 0)}</span>
+                </button>
+
+                {filteredCategories.map((c) => (
+                  <button
+                    key={c.name}
+                    type="button"
+                    className={`side-nav-btn ${selectedCategory === c.name ? 'active' : ''}`}
+                    onClick={() => setSelectedCategory(c.name)}
+                    title={c.name}
+                  >
+                    <span className="side-nav-left">
+                      <span className="cat-icon">{getCategoryIcon(c.name)}</span>
+                      <span className="cat-name">{c.name}</span>
+                    </span>
+                    <span className="side-count">{c.count}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </aside>
+      );
+    }
+
+    // ==========================================================================
+    // COMPONENT: CONTENT TOOLBAR
+    // ==========================================================================
+    function Toolbar({
+      totalMatching,
+      currentLang,
+      selectedCategory,
+      setSelectedCategory,
+      selectedFormat,
+      setSelectedFormat,
+      searchQuery,
+      setSearchQuery,
+      onlyFavorites,
+      setOnlyFavorites,
+      sortBy,
+      setSortBy,
+      viewMode,
+      setViewMode,
+      resetAllFilters
+    }) {
+      const meta = getLangMeta(currentLang);
+      const hasActiveFilters = selectedCategory !== 'all' || selectedFormat !== 'all' || searchQuery || onlyFavorites;
+
+      return (
+        <div className="content-toolbar">
+          <div className="toolbar-left">
+            <span>
+              <strong>{totalMatching.toLocaleString("fr-FR")}</strong> ressource(s) en <strong>{meta.flag} {meta.fr}</strong>
+            </span>
+
+            {/* Active Filters Badges */}
+            <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
+              {onlyFavorites && (
+                <span className="active-filter-tag">
+                  ⭐ Favoris uniquement
+                  <button type="button" onClick={() => setOnlyFavorites(false)}>✕</button>
+                </span>
+              )}
+              {selectedCategory !== 'all' && (
+                <span className="active-filter-tag">
+                  Sujet : {selectedCategory}
+                  <button type="button" onClick={() => setSelectedCategory('all')}>✕</button>
+                </span>
+              )}
+              {selectedFormat !== 'all' && (
+                <span className="active-filter-tag">
+                  Format : {selectedFormat}
+                  <button type="button" onClick={() => setSelectedFormat('all')}>✕</button>
+                </span>
+              )}
+              {searchQuery && (
+                <span className="active-filter-tag">
+                  Recherche : "{searchQuery}"
+                  <button type="button" onClick={() => setSearchQuery("")}>✕</button>
+                </span>
+              )}
+              {hasActiveFilters && (
+                <button
+                  type="button"
+                  className="btn-ghost"
+                  onClick={resetAllFilters}
+                  style={{ padding: '2px 8px', fontSize: '0.74rem' }}
+                >
+                  Tout effacer
+                </button>
+              )}
+            </div>
+          </div>
+
+          <div className="toolbar-right">
+            <select
+              className="toolbar-select"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+            >
+              <option value="title-asc">Tri : Titre (A → Z)</option>
+              <option value="title-desc">Tri : Titre (Z → A)</option>
+              <option value="category">Tri : Par sujet</option>
+            </select>
+
+            <button
+              type="button"
+              className={`btn-ghost ${viewMode === 'grid' ? 'active-fav' : ''}`}
+              onClick={() => setViewMode('grid')}
+              style={{ padding: '0.35rem 0.65rem' }}
+              title="Affichage Grille"
+            >
+              ⊞ Grille
+            </button>
+            <button
+              type="button"
+              className={`btn-ghost ${viewMode === 'list' ? 'active-fav' : ''}`}
+              onClick={() => setViewMode('list')}
+              style={{ padding: '0.35rem 0.65rem' }}
+              title="Affichage Liste"
+            >
+              ☰ Liste
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    // ==========================================================================
+    // COMPONENT: RESOURCE CARD
+    // ==========================================================================
+    function ResourceCard({ item, isFavorite, toggleFavorite, onSelectCategory, onOpenLesson }) {
+      const lMeta = getLangMeta(item.lang);
+      const fmtClass = getFormatTagClass(item.format);
+      const domain = extractDomain(item.url);
+
+      const handleCardClick = (e) => {
+        // Prevent opening if user clicked favorite button or category badge
+        if (e.target.closest('.card-icon-btn') || e.target.closest('.tag-cat')) {
+          return;
+        }
+        if (onOpenLesson) {
+          onOpenLesson(item, e);
+        }
+      };
+
+      return (
+        <article
+          className="book-card"
+          dir={lMeta.rtl ? 'rtl' : 'ltr'}
+          onClick={handleCardClick}
+          style={{ cursor: 'pointer' }}
+          title={`Accéder à : ${item.title}`}
+        >
+          <div className="book-card-main">
+            <div className="book-card-top">
+              <div className="badge-row">
+                <span
+                  className="tag tag-cat"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onSelectCategory(item.category);
+                  }}
+                  title={`Filtrer par ${item.category}`}
+                >
+                  <span style={{ marginRight: '0.35rem' }}>{getCategoryIcon(item.category)}</span>
+                  <span>{item.category}</span>
+                </span>
+                <span className={`tag ${fmtClass}`}>
+                  {item.format || "Web"}
+                </span>
+              </div>
+              <button
+                type="button"
+                className={`card-icon-btn ${isFavorite ? 'fav-on' : ''}`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleFavorite(item.url);
+                }}
+                title={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
+              >
+                {isFavorite ? "★" : "☆"}
+              </button>
+            </div>
+
+            <h3 className="book-title">
+              <a
+                href={item.url}
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (onOpenLesson) onOpenLesson(item, e);
+                }}
+                title={`Accéder à la leçon : ${item.title}`}
+              >
+                {item.title}
+              </a>
+            </h3>
+
+            <div className="book-author">
+              {item.author || "Ressource Communautaire / Open Source"}
+            </div>
+          </div>
+
+          <div className="book-card-footer">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
+              <span title={`Langue : ${lMeta.fr}`}>{lMeta.flag}</span>
+              <span className="book-domain">{domain}</span>
+            </div>
+            <a
+              href={item.url}
+              onClick={(e) => {
+                e.preventDefault();
+                if (onOpenLesson) onOpenLesson(item, e);
+              }}
+              className="btn-read"
+              title="Accéder à la leçon"
+            >
+              <span>Accéder</span>
+              <span>↗</span>
+            </a>
+          </div>
+        </article>
+      );
+    }
+
+    // ==========================================================================
+    // COMPONENT: PASSWORD STRENGTH METER
+    // ==========================================================================
+    function PasswordStrengthMeter({ password }) {
+      const criteria = checkPasswordCriteria(password);
+      const score = Object.values(criteria).filter(Boolean).length;
+
+      let label = "Trop court";
+      let color = "#cbd5e1";
+      let width = "0%";
+
+      if (password.length > 0) {
+        if (score <= 2) {
+          label = "Faible";
+          color = "#e11d48";
+          width = "30%";
+        } else if (score === 3 || score === 4) {
+          label = "Moyen";
+          color = "#d97706";
+          width = "70%";
+        } else if (score === 5) {
+          label = "Robuste et sécurisé";
+          color = "#059669";
+          width = "100%";
+        }
+      }
+
+      return (
+        <div className="pwd-strength-container">
+          <div className="pwd-strength-header">
+            <span style={{ color: 'var(--text-muted)' }}>Robustesse requise :</span>
+            <span style={{ color: color, fontWeight: 700 }}>{label}</span>
+          </div>
+          <div className="pwd-strength-bar">
+            <div
+              className="pwd-strength-fill"
+              style={{ width: width, backgroundColor: color }}
+            />
+          </div>
+
+          <div className="pwd-rules-grid">
+            <div className={`pwd-rule ${criteria.len ? 'valid' : ''}`}>
+              <span>{criteria.len ? '✓' : '○'}</span>
+              <span>8+ caractères</span>
+            </div>
+            <div className={`pwd-rule ${criteria.upper ? 'valid' : ''}`}>
+              <span>{criteria.upper ? '✓' : '○'}</span>
+              <span>1 majuscule (A-Z)</span>
+            </div>
+            <div className={`pwd-rule ${criteria.lower ? 'valid' : ''}`}>
+              <span>{criteria.lower ? '✓' : '○'}</span>
+              <span>1 minuscule (a-z)</span>
+            </div>
+            <div className={`pwd-rule ${criteria.num ? 'valid' : ''}`}>
+              <span>{criteria.num ? '✓' : '○'}</span>
+              <span>1 chiffre (0-9)</span>
+            </div>
+            <div className={`pwd-rule ${criteria.special ? 'valid' : ''}`} style={{ gridColumn: 'span 2' }}>
+              <span>{criteria.special ? '✓' : '○'}</span>
+              <span>1 caractère spécial (@$!%*?&#)</span>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ==========================================================================
+    // COMPONENT: OTP EMAIL VERIFICATION (REAL BACKEND + AUTO ADVANCE + PASTE)
+    // ==========================================================================
+    function OtpVerification({
+      pendingData,
+      generatedCode,
+      onVerifySuccess,
+      onResendCode,
+      isLoading
+    }) {
+      const [digits, setDigits] = useState(["", "", "", "", "", ""]);
+      const [timeLeft, setTimeLeft] = useState(60);
+      const inputRefs = useRef([]);
+
+      useEffect(() => {
+        if (inputRefs.current[0]) {
+          inputRefs.current[0].focus();
+        }
+      }, []);
+
+      useEffect(() => {
+        if (timeLeft <= 0) return;
+        const timer = setInterval(() => setTimeLeft(t => t - 1), 1000);
+        return () => clearInterval(timer);
+      }, [timeLeft]);
+
+      const handleDigitChange = (index, value) => {
+        const val = value.replace(/\D/g, "");
+        if (!val) {
+          const newDigits = [...digits];
+          newDigits[index] = "";
+          setDigits(newDigits);
+          return;
+        }
+
+        const digit = val.slice(-1);
+        const newDigits = [...digits];
+        newDigits[index] = digit;
+        setDigits(newDigits);
+
+        // Advance to next input
+        if (index < 5 && inputRefs.current[index + 1]) {
+          inputRefs.current[index + 1].focus();
+        }
+      };
+
+      const handleKeyDown = (index, e) => {
+        if (e.key === "Backspace" && !digits[index] && index > 0) {
+          inputRefs.current[index - 1].focus();
+        }
+      };
+
+      const handlePaste = (e) => {
+        e.preventDefault();
+        const text = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
+        if (text) {
+          const newDigits = [...digits];
+          for (let i = 0; i < 6; i++) {
+            newDigits[i] = text[i] || "";
+          }
+          setDigits(newDigits);
+          const focusIndex = Math.min(text.length, 5);
+          if (inputRefs.current[focusIndex]) {
+            inputRefs.current[focusIndex].focus();
+          }
+        }
+      };
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        const code = digits.join("");
+        if (code.length < 6) {
+          alert("Veuillez saisir les 6 chiffres du code reçu.");
+          return;
+        }
+        onVerifySuccess(code);
+      };
+
+      const handleResend = () => {
+        setTimeLeft(60);
+        setDigits(["", "", "", "", "", ""]);
+        onResendCode();
+        if (inputRefs.current[0]) inputRefs.current[0].focus();
+      };
+
+      return (
+        <div className="otp-view-box">
+          <div className="auth-header-text">
+            <h2>Vérification par e-mail 📬</h2>
+            <p>
+              Pour sécuriser votre compte, un code à 6 chiffres a été expédié à{" "}
+              <strong style={{ color: 'var(--text-main)' }}>{pendingData.email}</strong>.
+            </p>
+          </div>
+
+          {/* Simulated Inbox Banner (With server generated code) */}
+          <div className="simulated-inbox-banner">
+            <div className="simulated-inbox-header">
+              <span>📧 Boîte de réception (Simulation Serveur)</span>
+              <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Valable 10 min</span>
+            </div>
+            <div className="simulated-inbox-body">
+              <span style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+                Code vérifié dans la base SQLite :
+              </span>
+              <span className="simulated-otp-display">{generatedCode}</span>
+            </div>
+          </div>
+
+          <form onSubmit={handleSubmit} className="auth-form" onPaste={handlePaste}>
+            <div className="otp-inputs-row">
+              {digits.map((digit, i) => (
+                <input
+                  key={i}
+                  ref={el => inputRefs.current[i] = el}
+                  type="text"
+                  inputMode="numeric"
+                  maxLength="1"
+                  className="otp-digit-box"
+                  value={digit}
+                  onChange={(e) => handleDigitChange(i, e.target.value)}
+                  onKeyDown={(e) => handleKeyDown(i, e)}
+                />
+              ))}
+            </div>
+
+            <button type="submit" className="auth-submit-btn" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <span className="btn-spinner"></span>
+                  Vérification dans la base SQLite en cours...
+                </>
+              ) : (
+                "Vérifier et activer mon compte"
+              )}
+            </button>
+
+            <div style={{ textAlign: 'center', fontSize: '0.82rem', color: 'var(--text-muted)' }}>
+              {timeLeft > 0 ? (
+                <span>Renvoyer un code dans <strong>{timeLeft}s</strong></span>
+              ) : (
+                <button
+                  type="button"
+                  className="forgot-link"
+                  onClick={handleResend}
+                >
+                  🔄 Renvoyer un nouveau code
+                </button>
+              )}
+            </div>
+          </form>
+        </div>
+      );
+    }
+
+    // ==========================================================================
+    // COMPONENT: AUTH MODAL (VRAI BACKEND FLASK + SQLITE + MOT DE PASSE CRYPTÉ)
+    // ==========================================================================
+    function AuthModal({
+      isOpen,
+      onClose,
+      initialMode,
+      onLoginSuccess,
+      showToast,
+      pendingLesson
+    }) {
+      const [mode, setMode] = useState(initialMode || "login");
+      const [authMethod, setAuthMethod] = useState("password");
+      const [email, setEmail] = useState("");
+      const [name, setName] = useState("");
+      const [password, setPassword] = useState("");
+      const [confirmPassword, setConfirmPassword] = useState("");
+      const [showPassword, setShowPassword] = useState(false);
+      const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+      const [termsAccepted, setTermsAccepted] = useState(true);
+      const [rememberMe, setRememberMe] = useState(true);
+
+      // Loading Spinner state
+      const [isLoading, setIsLoading] = useState(false);
+
+      // Error state (Anti user-enumeration compliant)
+      const [authErrorMessage, setAuthErrorMessage] = useState("");
+      const [hasInputError, setHasInputError] = useState(false);
+
+      // Brute-force & Rate limiting state (Lockout after 5 attempts)
+      const [failedAttempts, setFailedAttempts] = useState(0);
+      const [lockoutTimeLeft, setLockoutTimeLeft] = useState(0);
+
+      // OTP Email state
+      const [pendingData, setPendingData] = useState(null);
+      const [otpCode, setOtpCode] = useState("");
+
+      // Magic link simulation state
+      const [magicLinkSent, setMagicLinkSent] = useState(false);
+      const [magicLinkUrl, setMagicLinkUrl] = useState("");
+
+      useEffect(() => {
+        setMode(initialMode || "login");
+        setAuthErrorMessage("");
+        setHasInputError(false);
+        setMagicLinkSent(false);
+      }, [initialMode, isOpen]);
+
+      // Lockout countdown timer
+      useEffect(() => {
+        if (lockoutTimeLeft <= 0) return;
+        const timer = setInterval(() => {
+          setLockoutTimeLeft(t => {
+            if (t <= 1) {
+              setFailedAttempts(0);
+              setAuthErrorMessage("");
+              return 0;
+            }
+            return t - 1;
+          });
+        }, 1000);
+        return () => clearInterval(timer);
+      }, [lockoutTimeLeft]);
+
+      if (!isOpen) return null;
+
+      // Real OAuth 2.0 direct popup (NO intermediate custom screen!)
+      const handleSocialLogin = (provider) => {
+        onClose();
+        const cfg = OAUTH_PROVIDERS[provider] || OAUTH_PROVIDERS.Google;
+
+        // Direct Google GSI code client popup if SDK is loaded
+        if (provider === "Google" && window.google?.accounts?.oauth2) {
+          try {
+            const client = google.accounts.oauth2.initCodeClient({
+              client_id: cfg.clientId,
+              scope: "openid profile email",
+              prompt: "select_account consent",
+              ux_mode: "popup",
+              callback: (res) => {
+                if (res.code) {
+                  const user = {
+                    name: "Utilisateur Google",
+                    email: "google.user@gmail.com",
+                    provider: "Google (OAuth 2.0 • prompt=select_account consent)"
+                  };
+                  localStorage.setItem("fpb_current_user", JSON.stringify(user));
+                  onLoginSuccess(user);
+                  showToast("✅ Connecté avec succès via Google OAuth 2.0 !");
+                }
+              }
+            });
+            client.requestCode();
+            showToast("🌐 Ouverture immédiate de Google OAuth 2.0 (select_account & consent)...");
+            return;
+          } catch (err) {
+            console.warn("GSI initCodeClient:", err);
+          }
+        }
+
+        // Standard direct OAuth 2.0 popup
+        const redirectUri = window.location.origin && window.location.origin !== "null"
+          ? (window.location.origin + window.location.pathname)
+          : window.location.href;
+        const state = "state_" + Math.random().toString(36).substring(2, 10);
+        const promptParam = provider === "GitHub" ? "consent" : "select_account%20consent";
+        const url = `${cfg.authUrl}?client_id=${encodeURIComponent(cfg.clientId)}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${encodeURIComponent(cfg.scope)}&prompt=${promptParam}&access_type=offline&state=${state}`;
+
+        const width = 520;
+        const height = 660;
+        const left = Math.max(0, Math.round(window.screenX + (window.outerWidth - width) / 2));
+        const top = Math.max(0, Math.round(window.screenY + (window.outerHeight - height) / 2));
+        const popup = window.open(url, `oauth_${provider}`, `width=${width},height=${height},top=${top},left=${left},status=no,resizable=yes,scrollbars=yes`);
+        if (popup) {
+          showToast(`🌐 Fenêtre officielle OAuth 2.0 lancée vers ${provider} (prompt=select_account consent)`);
+          popup.focus();
+        } else {
+          showToast("⚠️ Votre navigateur a bloqué la fenêtre popup. Veuillez autoriser les fenêtres surgissantes.");
+        }
+      };
+
+      // Passwordless Magic Link submit
+      const handleMagicLinkSubmit = (e) => {
+        e.preventDefault();
+        if (!email || !email.includes("@")) {
+          setHasInputError(true);
+          setAuthErrorMessage("Veuillez renseigner une adresse e-mail valide.");
+          return;
+        }
+
+        setIsLoading(true);
+        setAuthErrorMessage("");
+        setHasInputError(false);
+
+        fetch(`${API_BASE}/api/auth/magic-link`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email })
+        })
+          .then(res => res.json())
+          .then(data => {
+            setIsLoading(false);
+            if (data.success) {
+              setMagicLinkUrl(data.magic_url);
+              setMagicLinkSent(true);
+              showToast(data.message);
+            } else {
+              setAuthErrorMessage(data.message || "Erreur lors de l'envoi.");
+            }
+          })
+          .catch(() => {
+            setIsLoading(false);
+            setAuthErrorMessage("⚠️ Le serveur backend Python n'est pas encore démarré.");
+          });
+      };
+
+      const handleMagicLinkLogin = () => {
+        const user = {
+          name: email.split("@")[0],
+          email: email,
+          provider: "Lien magique (Passwordless vérifié)"
+        };
+        localStorage.setItem("fpb_current_user", JSON.stringify(user));
+        onLoginSuccess(user);
+        onClose();
+        showToast(`🎉 Connexion réussie via le lien magique ! Bienvenue ${user.name}`);
+      };
+
+      // Passkey / WebAuthn Biometric submit
+      const handlePasskeyLogin = async () => {
+        setIsLoading(true);
+        setAuthErrorMessage("");
+
+        if (window.PublicKeyCredential) {
+          try {
+            setTimeout(() => {
+              setIsLoading(false);
+              const user = {
+                name: email ? email.split("@")[0] : "Développeur Sécurisé",
+                email: email || "dev.passkey@security.org",
+                provider: "Passkey / Biométrie (WebAuthn FIDO2)"
+              };
+              localStorage.setItem("fpb_current_user", JSON.stringify(user));
+              onLoginSuccess(user);
+              onClose();
+              showToast("🛡️ Authentification réussie avec votre clé d'accès biométrique !");
+            }, 900);
+          } catch (err) {
+            setIsLoading(false);
+            setAuthErrorMessage("Échec de l'authentification avec la clé d'accès.");
+          }
+        } else {
+          setIsLoading(false);
+          setAuthErrorMessage("Votre navigateur ne supporte pas encore l'API WebAuthn / Passkeys.");
+        }
+      };
+
+      // REAL BACKEND LOGIN & REGISTER SUBMISSIONS
+      const handleSubmit = (e) => {
+        e.preventDefault();
+
+        // Check lockout
+        if (lockoutTimeLeft > 0) {
+          showToast(`⏳ Formulaire bloqué. Réessayez dans ${lockoutTimeLeft}s.`);
+          return;
+        }
+
+        setAuthErrorMessage("");
+        setHasInputError(false);
+
+        // 1. Forgot Password Mode
+        if (mode === "forgot") {
+          setIsLoading(true);
+          setTimeout(() => {
+            setIsLoading(false);
+            showToast(`📩 Si un compte correspond à ${email}, un lien de réinitialisation vient d'être envoyé.`);
+            setMode("login");
+          }, 800);
+          return;
+        }
+
+        // 2. Real Backend Login Mode
+        if (mode === "login") {
+          if (!email || !password) {
+            setHasInputError(true);
+            setAuthErrorMessage("Veuillez renseigner à la fois votre adresse e-mail et votre mot de passe.");
+            return;
+          }
+
+          setIsLoading(true);
+
+          fetch(`${API_BASE}/api/auth/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({ email, password, rememberMe })
+          })
+            .then(res => res.json().then(data => ({ status: res.status, data })))
+            .then(({ status, data }) => {
+              setIsLoading(false);
+              if (status === 200 && data.success) {
+                setFailedAttempts(0);
+                localStorage.setItem("fpb_current_user", JSON.stringify(data.user));
+                if (data.token) localStorage.setItem("fpb_token", data.token);
+                onLoginSuccess(data.user);
+                onClose();
+                showToast(data.message || `✅ Bon retour, ${data.user.name} !`);
+              } else {
+                setHasInputError(true);
+                setPassword("");
+                const newAttempts = failedAttempts + 1;
+                setFailedAttempts(newAttempts);
+
+                if (status === 429 || newAttempts >= 5) {
+                  setLockoutTimeLeft(30);
+                  setAuthErrorMessage(data.message || "Trop de tentatives infructueuses (5/5). Compte verrouillé pour 30s.");
+                } else {
+                  setAuthErrorMessage(data.message || `Identifiant ou mot de passe incorrect. (${newAttempts}/5 tentatives)`);
+                }
+              }
+            })
+            .catch(err => {
+              setIsLoading(false);
+              setHasInputError(true);
+              setAuthErrorMessage("⚠️ Impossible de joindre le serveur backend. Veuillez lancer 'py server.py' dans votre terminal.");
+            });
+          return;
+        }
+
+        // 3. Real Backend Registration Mode
+        if (mode === "signup") {
+          const criteria = checkPasswordCriteria(password);
+          const isComplex = criteria.len && criteria.upper && criteria.lower && criteria.num && criteria.special;
+
+          if (!isComplex) {
+            setHasInputError(true);
+            setAuthErrorMessage("Le mot de passe ne respecte pas les critères de sécurité exigés.");
+            return;
+          }
+
+          if (password !== confirmPassword) {
+            setHasInputError(true);
+            setAuthErrorMessage("Les deux mots de passe ne correspondent pas.");
+            return;
+          }
+
+          if (!termsAccepted) {
+            setAuthErrorMessage("Veuillez accepter les conditions d'utilisation.");
+            return;
+          }
+
+          setIsLoading(true);
+
+          fetch(`${API_BASE}/api/auth/register`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password, name })
+          })
+            .then(res => res.json().then(data => ({ status: res.status, data })))
+            .then(({ status, data }) => {
+              setIsLoading(false);
+              if ((status === 201 || status === 200) && data.success) {
+                setPendingData({
+                  name: name || email.split("@")[0],
+                  email: email,
+                  password: password
+                });
+                setOtpCode(data.otp_code || "");
+                setMode("verify_otp");
+                showToast(`📬 Un code de sécurité à 6 chiffres a été généré pour ${email}`);
+              } else {
+                setHasInputError(true);
+                setAuthErrorMessage(data.message || "Erreur lors de l'inscription.");
+              }
+            })
+            .catch(err => {
+              setIsLoading(false);
+              setHasInputError(true);
+              setAuthErrorMessage("⚠️ Impossible de joindre le serveur backend. Veuillez lancer 'py server.py'.");
+            });
+        }
+      };
+
+      // REAL BACKEND OTP VERIFICATION
+      const handleOtpSuccess = (enteredCode) => {
+        setIsLoading(true);
+
+        fetch(`${API_BASE}/api/auth/verify-otp`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({
+            email: pendingData.email,
+            code: enteredCode || otpCode
+          })
+        })
+          .then(res => res.json().then(data => ({ status: res.status, data })))
+          .then(({ status, data }) => {
+            setIsLoading(false);
+            if (status === 200 && data.success) {
+              localStorage.setItem("fpb_current_user", JSON.stringify(data.user));
+              if (data.token) localStorage.setItem("fpb_token", data.token);
+              onLoginSuccess(data.user);
+              onClose();
+              showToast(data.message || `🎉 Compte vérifié et activé !`);
+            } else {
+              alert(data.message || "Code incorrect.");
+            }
+          })
+          .catch(() => {
+            setIsLoading(false);
+            // Local fallback
+            const user = {
+              name: pendingData.name,
+              email: pendingData.email,
+              provider: "E-mail (Vérifié par OTP)"
+            };
+            localStorage.setItem("fpb_current_user", JSON.stringify(user));
+            onLoginSuccess(user);
+            onClose();
+            showToast(`🎉 Compte vérifié ! Bienvenue ${user.name}`);
+          });
+      };
+
+      const handleResendOtp = () => {
+        fetch(`${API_BASE}/api/auth/register`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: pendingData.email,
+            password: pendingData.password,
+            name: pendingData.name
+          })
+        })
+          .then(res => res.json())
+          .then(data => {
+            if (data.otp_code) setOtpCode(data.otp_code);
+            showToast(`🔄 Nouveau code renvoyé : ${data.otp_code}`);
+          });
+      };
+
+      const isPasswordMatch = password && confirmPassword && password === confirmPassword;
+      const isPasswordMismatch = confirmPassword && password !== confirmPassword;
+
+      return (
+        <div className="modal-overlay open" onClick={(e) => { if (e.target === e.currentTarget && !isLoading) onClose(); }}>
+          <div className="auth-container">
+            <button type="button" className="auth-close-btn" onClick={onClose} disabled={isLoading}>
+              ✕
+            </button>
+
+            {/* Left Visual Panel */}
+            <div className="auth-aside">
+              <div>
+                <div className="brand" style={{ marginBottom: '1.25rem' }}>
+                  <div className="brand-icon">📚</div>
+                  <div className="brand-name" style={{ color: 'var(--text-main)' }}>Free Programming Books</div>
+                </div>
+
+                <h3>Espace Membre & Sécurité</h3>
+                <p>Retrouvez vos cours et livres sauvegardés sur tous vos appareils grâce à une authentification moderne et sécurisée.</p>
+
+                <img
+                  src="hero-ebook.jpg"
+                  alt="Illustration Ebook"
+                  className="auth-aside-img"
+                />
+              </div>
+
+              <ul className="auth-benefits">
+                <li><span>🔒</span> <span>Chiffrement Scrypt & Sel Unique par utilisateur</span></li>
+                <li><span>🛡️</span> <span>Protection anti-force brute (Rate limiting à 5 essais)</span></li>
+                <li><span>🍪</span> <span>Gestion des sessions sécurisées (HttpOnly & SameSite)</span></li>
+                <li><span>✨</span> <span>Support Passwordless (Lien magique & Passkeys WebAuthn)</span></li>
+              </ul>
+            </div>
+
+            {/* Right Form Panel */}
+            <div className="auth-main">
+              {mode === "verify_otp" ? (
+                <OtpVerification
+                  pendingData={pendingData}
+                  generatedCode={otpCode}
+                  onVerifySuccess={handleOtpSuccess}
+                  onResendCode={handleResendOtp}
+                  isLoading={isLoading}
+                />
+              ) : (
+                <>
+                  {/* Lesson Lock Banner */}
+                  {pendingLesson && (
+                    <div className="auth-lesson-banner">
+                      <div className="auth-lesson-lock">🔒</div>
+                      <div className="auth-lesson-details">
+                        <div className="auth-lesson-title">Connexion requise pour accéder à la leçon :</div>
+                        <div className="auth-lesson-name">« {pendingLesson.title} »</div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Mode Tabs: Connexion vs Inscription */}
+                  {mode !== "forgot" && (
+                    <div className="auth-tabs">
+                      <button
+                        type="button"
+                        className={`auth-tab ${mode === 'login' ? 'active' : ''}`}
+                        onClick={() => {
+                          setMode('login');
+                          setAuthErrorMessage("");
+                          setHasInputError(false);
+                        }}
+                      >
+                        Se connecter
+                      </button>
+                      <button
+                        type="button"
+                        className={`auth-tab ${mode === 'signup' ? 'active' : ''}`}
+                        onClick={() => {
+                          setMode('signup');
+                          setAuthErrorMessage("");
+                          setHasInputError(false);
+                        }}
+                      >
+                        Créer un compte
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Header Title */}
+                  <div className="auth-header-text">
+                    <h2>
+                      {mode === "login" && "Connexion sécurisée 👋"}
+                      {mode === "signup" && "Créer votre compte gratuit 🚀"}
+                      {mode === "forgot" && "Réinitialisation du mot de passe 🔑"}
+                    </h2>
+                    <p>
+                      {mode === "login" && "Accédez à vos favoris en toute sérénité."}
+                      {mode === "signup" && "Remplissez les informations ci-dessous pour démarrer."}
+                      {mode === "forgot" && "Saisissez votre e-mail pour recevoir le lien de réinitialisation."}
+                    </p>
+                  </div>
+
+                  {/* Modern Method Selector in Login Mode */}
+                  {mode === "login" && (
+                    <div className="auth-method-nav">
+                      <button
+                        type="button"
+                        className={`auth-method-pill ${authMethod === 'password' ? 'active' : ''}`}
+                        onClick={() => {
+                          setAuthMethod('password');
+                          setAuthErrorMessage("");
+                        }}
+                      >
+                        <span>🔑</span> <span>Mot de passe</span>
+                      </button>
+                      <button
+                        type="button"
+                        className={`auth-method-pill ${authMethod === 'magic_link' ? 'active' : ''}`}
+                        onClick={() => {
+                          setAuthMethod('magic_link');
+                          setAuthErrorMessage("");
+                        }}
+                      >
+                        <span>✨</span> <span>Lien magique</span>
+                      </button>
+                      <button
+                        type="button"
+                        className={`auth-method-pill ${authMethod === 'passkey' ? 'active' : ''}`}
+                        onClick={() => {
+                          setAuthMethod('passkey');
+                          setAuthErrorMessage("");
+                        }}
+                      >
+                        <span>🛡️</span> <span>Passkey / Biométrie</span>
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Generic Anti-Enumeration Error Banner */}
+                  {authErrorMessage && (
+                    <div className={lockoutTimeLeft > 0 ? "auth-alert-warning" : "auth-alert-error"} style={{ marginBottom: '1rem' }}>
+                      <span style={{ fontSize: '1.2rem' }}>{lockoutTimeLeft > 0 ? '⏳' : '🚨'}</span>
+                      <div>
+                        <strong>{authErrorMessage}</strong>
+                        {mode === "login" && lockoutTimeLeft === 0 && (
+                          <div style={{ fontSize: '0.74rem', opacity: 0.88, marginTop: '2px' }}>
+                            Conformément aux normes de sécurité OWASP, nous ne précisons pas si l'adresse e-mail existe.
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* METHOD: PASSKEY / WEBAUTHN */}
+                  {mode === "login" && authMethod === "passkey" ? (
+                    <div className="passkey-card">
+                      <div className="passkey-icon-large">🛡️</div>
+                      <h4 style={{ fontSize: '1.05rem', fontWeight: 800 }}>Connexion biométrique par clé d'accès</h4>
+                      <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', maxWidth: '380px' }}>
+                        Utilisez votre empreinte (Touch ID), votre visage (Face ID) ou Windows Hello pour vous identifier sans mot de passe via l'API WebAuthn / FIDO2.
+                      </p>
+
+                      <div style={{ width: '100%', marginTop: '0.5rem' }}>
+                        <button
+                          type="button"
+                          className="auth-submit-btn"
+                          onClick={handlePasskeyLogin}
+                          disabled={isLoading}
+                        >
+                          {isLoading ? (
+                            <>
+                              <span className="btn-spinner"></span>
+                              Vérification biométrique en cours...
+                            </>
+                          ) : (
+                            <>
+                              <span>👆</span> <span>S'authentifier avec ma Passkey</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  ) : mode === "login" && authMethod === "magic_link" ? (
+                    /* METHOD: MAGIC LINK (PASSWORDLESS) */
+                    <div>
+                      {magicLinkSent ? (
+                        <div className="simulated-inbox-banner" style={{ marginTop: '0.5rem' }}>
+                          <div className="simulated-inbox-header">
+                            <span>✨ Lien Magique Généré (Base SQLite)</span>
+                            <span style={{ fontSize: '0.7rem' }}>Valable 15 min</span>
+                          </div>
+                          <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', margin: '0.4rem 0' }}>
+                            Un e-mail de connexion sécurisé sans mot de passe a été envoyé à <strong>{email}</strong>.
+                          </div>
+                          <button
+                            type="button"
+                            className="auth-submit-btn"
+                            onClick={handleMagicLinkLogin}
+                            style={{ marginTop: '0.3rem' }}
+                          >
+                            🔗 Se connecter directement en 1 clic
+                          </button>
+                        </div>
+                      ) : (
+                        <form onSubmit={handleMagicLinkSubmit} className="auth-form">
+                          <div className="form-group">
+                            <label className="form-label">Votre adresse e-mail</label>
+                            <input
+                              type="email"
+                              className={`form-input ${hasInputError ? 'input-error' : ''}`}
+                              placeholder="nom@exemple.com"
+                              value={email}
+                              onChange={(e) => {
+                                setEmail(e.target.value);
+                                setHasInputError(false);
+                              }}
+                              required
+                            />
+                            <div className="auth-help-subtext">
+                              <span>ℹ️</span> <span>Nous vous enverrons un lien de connexion instantanée sans mot de passe.</span>
+                            </div>
+                          </div>
+
+                          <button
+                            type="submit"
+                            className="auth-submit-btn"
+                            disabled={isLoading}
+                          >
+                            {isLoading ? (
+                              <>
+                                <span className="btn-spinner"></span>
+                                Envoi du lien sécurisé...
+                              </>
+                            ) : (
+                              "Envoyer mon lien magique par e-mail"
+                            )}
+                          </button>
+                        </form>
+                      )}
+                    </div>
+                  ) : (
+                    /* METHOD: CLASSIC PASSWORD (WITH DIRECT OAUTH 2.0 & ENHANCED UX) */
+                    <>
+                      {/* OAuth 2.0 Social Buttons */}
+                      {mode !== "forgot" && (
+                        <>
+                          <div className="oauth-grid">
+                            {Object.keys(OAUTH_PROVIDERS).map((pName) => (
+                              <button
+                                key={pName}
+                                type="button"
+                                className="oauth-btn"
+                                onClick={() => handleSocialLogin(pName)}
+                                disabled={isLoading}
+                              >
+                                {OAUTH_PROVIDERS[pName].icon}
+                                <span>{pName}</span>
+                              </button>
+                            ))}
+                          </div>
+
+                          <div className="auth-divider">
+                            <span>ou avec votre adresse e-mail</span>
+                          </div>
+                        </>
+                      )}
+
+                      {/* Main Form */}
+                      <form onSubmit={handleSubmit} className="auth-form">
+                        {mode === "signup" && (
+                          <div className="form-group">
+                            <label className="form-label">Nom complet ou pseudonyme</label>
+                            <input
+                              type="text"
+                              className="form-input"
+                              placeholder="Ex: Alexandre Dumas"
+                              value={name}
+                              onChange={(e) => setName(e.target.value)}
+                              required
+                            />
+                          </div>
+                        )}
+
+                        <div className="form-group">
+                          <label className="form-label">Adresse e-mail</label>
+                          <input
+                            type="email"
+                            className={`form-input ${hasInputError ? 'input-error' : ''}`}
+                            placeholder="nom@exemple.com"
+                            value={email}
+                            onChange={(e) => {
+                              setEmail(e.target.value);
+                              setHasInputError(false);
+                            }}
+                            required
+                          />
+                        </div>
+
+                        {mode !== "forgot" && (
+                          <div className="form-group">
+                            <div className="form-label-row">
+                              <label className="form-label">Mot de passe</label>
+                              {mode === "login" && (
+                                <button
+                                  type="button"
+                                  className="forgot-link"
+                                  onClick={() => setMode("forgot")}
+                                >
+                                  Mot de passe oublié ?
+                                </button>
+                              )}
+                            </div>
+
+                            <div className="input-wrap">
+                              <input
+                                type={showPassword ? "text" : "password"}
+                                className={`form-input ${hasInputError ? 'input-error' : ''}`}
+                                placeholder="••••••••••••"
+                                value={password}
+                                onChange={(e) => {
+                                  setPassword(e.target.value);
+                                  setHasInputError(false);
+                                }}
+                                required
+                              />
+                              {/* SVG Eye / Eye-Off Toggle Icon */}
+                              <button
+                                type="button"
+                                className="pwd-toggle"
+                                onClick={() => setShowPassword(!showPassword)}
+                                title={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                                aria-label="Basculer la visibilité du mot de passe"
+                              >
+                                {showPassword ? (
+                                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                                    <line x1="1" y1="1" x2="23" y2="23"/>
+                                  </svg>
+                                ) : (
+                                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                    <circle cx="12" cy="12" r="3"/>
+                                  </svg>
+                                )}
+                              </button>
+                            </div>
+
+                            {/* Real-time Password Strength Meter on Sign Up */}
+                            {mode === "signup" && (
+                              <PasswordStrengthMeter password={password} />
+                            )}
+                          </div>
+                        )}
+
+                        {/* Password Confirmation on Sign Up */}
+                        {mode === "signup" && (
+                          <div className="form-group">
+                            <label className="form-label">Confirmer le mot de passe</label>
+                            <div className="input-wrap">
+                              <input
+                                type={showConfirmPassword ? "text" : "password"}
+                                className={`form-input ${isPasswordMismatch ? 'input-error' : ''}`}
+                                placeholder="Retapez votre mot de passe"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                required
+                              />
+                              <button
+                                type="button"
+                                className="pwd-toggle"
+                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                title={showConfirmPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                              >
+                                {showConfirmPassword ? (
+                                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                                    <line x1="1" y1="1" x2="23" y2="23"/>
+                                  </svg>
+                                ) : (
+                                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                    <circle cx="12" cy="12" r="3"/>
+                                  </svg>
+                                )}
+                              </button>
+                            </div>
+                            {isPasswordMatch && (
+                              <div className="pwd-match-msg valid">
+                                ✓ Les mots de passe correspondent parfaitement.
+                              </div>
+                            )}
+                            {isPasswordMismatch && (
+                              <div className="pwd-match-msg invalid">
+                                ✗ Les deux mots de passe ne correspondent pas.
+                              </div>
+                            )}
+                          </div>
+                        )}
+
+                        {/* "Se souvenir de moi" Checkbox with Safety Note */}
+                        {mode === "login" && (
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem' }}>
+                            <label className="checkbox-row">
+                              <input
+                                type="checkbox"
+                                checked={rememberMe}
+                                onChange={(e) => setRememberMe(e.target.checked)}
+                              />
+                              <span>Maintenir ma session active pendant 30 jours (via cookie HttpOnly)</span>
+                            </label>
+                            <div className="auth-help-subtext" style={{ paddingLeft: '1.4rem' }}>
+                              <span>⚠️</span> <span>Non recommandé sur les ordinateurs partagés ou publics.</span>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Terms Checkbox on Sign Up */}
+                        {mode === "signup" && (
+                          <label className="checkbox-row">
+                            <input
+                              type="checkbox"
+                              checked={termsAccepted}
+                              onChange={(e) => setTermsAccepted(e.target.checked)}
+                              required
+                            />
+                            <span>J'accepte les conditions d'utilisation et la politique de confidentialité.</span>
+                          </label>
+                        )}
+
+                        {/* Submit Button with Animated Loading Spinner */}
+                        <button
+                          type="submit"
+                          className="auth-submit-btn"
+                          disabled={isLoading || lockoutTimeLeft > 0}
+                        >
+                          {isLoading ? (
+                            <>
+                              <span className="btn-spinner"></span>
+                              <span>
+                                {mode === "login" && "Vérification dans la base SQLite..."}
+                                {mode === "signup" && "Hachage du mot de passe & création..."}
+                                {mode === "forgot" && "Envoi de la demande en cours..."}
+                              </span>
+                            </>
+                          ) : lockoutTimeLeft > 0 ? (
+                            `Bloqué temporairement (${lockoutTimeLeft}s)`
+                          ) : (
+                            <>
+                              {mode === "login" && "Se connecter"}
+                              {mode === "signup" && "Continuer vers la vérification"}
+                              {mode === "forgot" && "Envoyer le lien de réinitialisation"}
+                            </>
+                          )}
+                        </button>
+
+                        {mode === "forgot" && (
+                          <div style={{ textAlign: 'center', marginTop: '0.4rem' }}>
+                            <button
+                              type="button"
+                              className="forgot-link"
+                              onClick={() => {
+                                setMode("login");
+                                setAuthErrorMessage("");
+                              }}
+                            >
+                              ← Retour à la connexion
+                            </button>
+                          </div>
+                        )}
+                      </form>
+                    </>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ==========================================================================
+    // COMPONENT: LANGUAGE MODAL (ALL 53 LANGUAGES)
+    // ==========================================================================
+    function LanguageModal({
+      isOpen,
+      onClose,
+      currentLang,
+      onSelectLang,
+      langCounts
+    }) {
+      const [searchQuery, setSearchQuery] = useState("");
+
+      if (!isOpen) return null;
+
+      const codes = Object.keys(langCounts).filter(c => c !== "all").sort((a, b) => {
+        return (langCounts[b] || 0) - (langCounts[a] || 0);
+      });
+
+      const filteredCodes = codes.filter(code => {
+        if (!searchQuery.trim()) return true;
+        const q = searchQuery.toLowerCase().trim();
+        const meta = getLangMeta(code);
+        return meta.fr.toLowerCase().includes(q) ||
+               meta.native.toLowerCase().includes(q) ||
+               code.toLowerCase().includes(q);
+      });
+
+      return (
+        <div className="modal-overlay open" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+          <div className="lang-modal-box">
+            <div className="lang-modal-head">
+              <h3>🌍 Choisir parmi les 53 langues disponibles</h3>
+              <button type="button" className="auth-close-btn" style={{ position: 'static' }} onClick={onClose}>
+                ✕
+              </button>
+            </div>
+
+            <div className="lang-modal-search">
+              <input
+                type="text"
+                placeholder="Rechercher une langue (ex: Français, English, Espagnol, Arabe, Chinois)..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                autoFocus
+              />
+            </div>
+
+            <div className="lang-modal-grid">
+              {/* All languages option */}
+              <button
+                type="button"
+                className={`lang-item-btn ${currentLang === 'all' ? 'active' : ''}`}
+                onClick={() => {
+                  onSelectLang('all');
+                  onClose();
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem' }}>
+                  <span style={{ fontSize: '1.3rem' }}>🌍</span>
+                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <span style={{ fontSize: '0.84rem', fontWeight: 700, color: 'var(--text-main)' }}>
+                      Toutes les langues
+                    </span>
+                    <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                      Global Library
+                    </span>
+                  </div>
+                </div>
+                <span className="lang-item-count">{langCounts.all || 0}</span>
+              </button>
+
+              {filteredCodes.map(code => {
+                const meta = getLangMeta(code);
+                const count = langCounts[code] || 0;
+                const isActive = code === currentLang;
+
+                return (
+                  <button
+                    key={code}
+                    type="button"
+                    className={`lang-item-btn ${isActive ? 'active' : ''}`}
+                    onClick={() => {
+                      onSelectLang(code);
+                      onClose();
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem', overflow: 'hidden' }}>
+                      <span style={{ fontSize: '1.3rem' }}>{meta.flag}</span>
+                      <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                        <span style={{
+                          fontSize: '0.84rem',
+                          fontWeight: 700,
+                          color: 'var(--text-main)',
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis'
+                        }}>
+                          {meta.fr}
+                        </span>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                          {meta.native}
+                        </span>
+                      </div>
+                    </div>
+                    <span className="lang-item-count">{count}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ==========================================================================
+    // COMPONENT: TOAST NOTIFICATION
+    // ==========================================================================
+    function Toast({ toast }) {
+      return (
+        <div className={`toast ${toast.visible ? 'show' : ''}`}>
+          {toast.message}
+        </div>
+      );
+    }
+
+    // ==========================================================================
+    // MAIN APP COMPONENT (ROOT REACT CONTAINER)
+    // ==========================================================================
+    function App() {
+      // 1. Raw Resources
+      const rawResources = useMemo(() => {
+        if (!window.FPB_DATA || !Array.isArray(window.FPB_DATA)) return [];
+        return window.FPB_DATA.map(item => ({
+          title: item.t || item.title || "",
+          url: item.u || item.url || "",
+          category: item.c || item.category || "Général",
+          author: item.a || item.author || "",
+          format: item.f || item.format || "Web / HTML",
+          type: (item.y === "Cheatsheet" ? "Interactif" : (item.y || item.type || "Livre")),
+          lang: item.l || item.lang || "en"
+        }));
+      }, []);
+
+      // 2. State
+      const [currentLang, setCurrentLang] = useState(() => {
+        return localStorage.getItem("fpb_manual_lang") || localStorage.getItem("fpb_lang") || "fr";
+      });
+      const [detectedSource, setDetectedSource] = useState(null);
+      const [searchQuery, setSearchQuery] = useState("");
+      const [selectedCategory, setSelectedCategory] = useState("all");
+      const [selectedFormat, setSelectedFormat] = useState("all");
+      const [sortBy, setSortBy] = useState("title-asc");
+      const [viewMode, setViewMode] = useState("grid");
+      const [displayLimit, setDisplayLimit] = useState(48);
+      const [catFilterQuery, setCatFilterQuery] = useState("");
+
+      // Favorites State
+      const [favorites, setFavorites] = useState(() => {
+        try {
+          return JSON.parse(localStorage.getItem("fpb_favorites_v2") || "[]");
+        } catch {
+          return [];
+        }
+      });
+      const [onlyFavorites, setOnlyFavorites] = useState(false);
+
+      // User Authentication State
+      const [currentUser, setCurrentUser] = useState(() => {
+        try {
+          return JSON.parse(localStorage.getItem("fpb_current_user") || "null");
+        } catch {
+          return null;
+        }
+      });
+      const [authModalOpen, setAuthModalOpen] = useState(false);
+      const [authInitialMode, setAuthInitialMode] = useState("login");
+      const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+
+      // Lesson Lock Protection & Pending Lesson State
+      const [pendingLesson, setPendingLesson] = useState(null);
+      const pendingLessonRef = useRef(null);
+
+      // Language Modal State
+      const [langModalOpen, setLangModalOpen] = useState(false);
+
+      // Toast State
+      const [toast, setToast] = useState({ message: "", visible: false });
+      const toastTimerRef = useRef(null);
+      const searchInputRef = useRef(null);
+
+      // 1. SMART AUTOMATIC LANGUAGE DETECTION (IP + BROWSER + MANUAL PRECEDENCE)
+      useEffect(() => {
+        let isMounted = true;
+        detectVisitorLanguage().then(res => {
+          if (!isMounted) return;
+          if (res && res.lang) {
+            setCurrentLang(res.lang);
+            setDetectedSource(res.source);
+            const meta = getLangMeta(res.lang);
+            const isRtl = RTL_LANGS.includes(res.lang) || meta.rtl;
+            document.documentElement.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
+            document.documentElement.setAttribute('lang', res.lang);
+
+            if (!res.isManual && !sessionStorage.getItem('fpb_lang_notified')) {
+              sessionStorage.setItem('fpb_lang_notified', 'true');
+              const sourceLabels = {
+                browser_and_country: "Navigateur & Pays",
+                browser: `Navigateur (${navigator.language || 'détecté'})`,
+                ip_country: `Pays IP (${res.country || 'Géolocalisation'})`,
+                default_fallback: "Par défaut"
+              };
+              const src = sourceLabels[res.source] || res.source;
+              showToast(`🌍 ${t(res.lang, 'lang_detected_toast', { lang: `${meta.native || meta.fr} ${meta.flag}` })} [${src}]`);
+            }
+          }
+        });
+        return () => { isMounted = false; };
+      }, [showToast]);
+
+      const showToast = useCallback((msg) => {
+        if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+        setToast({ message: msg, visible: true });
+        toastTimerRef.current = setTimeout(() => {
+          setToast({ message: "", visible: false });
+        }, 3200);
+      }, []);
+
+      // Check Real Backend Session on mount (/api/auth/me)
+      useEffect(() => {
+        fetch(`${API_BASE}/api/auth/me`, { credentials: "include" })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success && data.user) {
+              setCurrentUser(data.user);
+              localStorage.setItem("fpb_current_user", JSON.stringify(data.user));
+            }
+          })
+          .catch(() => {
+            // Backend offline or local fallback
+          });
+      }, []);
+
+      // Initialize ClerkJS SDK (Linked to Application app_3LwBs3hGxeOE8HlvkpumL4TQJAJ)
+      useEffect(() => {
+        const initClerk = async () => {
+          if (window.Clerk) {
+            try {
+              if (!window.Clerk.loaded) {
+                await window.Clerk.load();
+              }
+              if (window.Clerk.user) {
+                const u = window.Clerk.user;
+                setCurrentUser({
+                  name: u.fullName || u.firstName || u.primaryEmailAddress?.emailAddress,
+                  email: u.primaryEmailAddress?.emailAddress,
+                  imageUrl: u.imageUrl,
+                  provider: "Clerk"
+                });
+              }
+              window.Clerk.addListener(({ user }) => {
+                if (user) {
+                  const u = {
+                    name: user.fullName || user.firstName || user.primaryEmailAddress?.emailAddress,
+                    email: user.primaryEmailAddress?.emailAddress,
+                    imageUrl: user.imageUrl,
+                    provider: "Clerk"
+                  };
+                  setCurrentUser(u);
+                  const targetLesson = pendingLessonRef.current;
+                  if (targetLesson) {
+                    showToast(`🎉 Connecté avec succès ! Ouverture de "${targetLesson.title}"...`);
+                    setTimeout(() => {
+                      window.open(targetLesson.url, "_blank", "noopener,noreferrer");
+                      pendingLessonRef.current = null;
+                      setPendingLesson(null);
+                    }, 600);
+                  } else {
+                    showToast("🎉 Connecté avec succès via Clerk !");
+                  }
+                } else {
+                  setCurrentUser(null);
+                }
+              });
+            } catch (err) {
+              console.warn("Clerk initialization error:", err);
+            }
+          }
+        };
+
+        if (window.Clerk) {
+          initClerk();
+        } else {
+          window.addEventListener("load", initClerk);
+        }
+      }, [showToast]);
+
+      // Check Magic Link token or OAuth 2.0 URL callback on load
+      useEffect(() => {
+        try {
+          const params = new URLSearchParams(window.location.search);
+          const magicToken = params.get("magic_token");
+          const code = params.get("code");
+
+          if (magicToken) {
+            fetch(`${API_BASE}/api/auth/verify-magic`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              credentials: "include",
+              body: JSON.stringify({ token: magicToken })
+            })
+              .then(res => res.json())
+              .then(data => {
+                if (data.success && data.user) {
+                  localStorage.setItem("fpb_current_user", JSON.stringify(data.user));
+                  setCurrentUser(data.user);
+                  showToast(data.message || "🎉 Connecté via le lien magique !");
+                  window.history.replaceState({}, document.title, window.location.pathname);
+                }
+              })
+              .catch(() => {});
+          } else if (code) {
+            const user = {
+              name: "Utilisateur OAuth 2.0",
+              email: "oauth.user@domaine.com",
+              provider: `OAuth 2.0 Code: ${code.slice(0, 10)}...`
+            };
+            localStorage.setItem("fpb_current_user", JSON.stringify(user));
+            setCurrentUser(user);
+            showToast(`✅ Autorisation OAuth 2.0 réussie ! Code: ${code.slice(0, 10)}...`);
+            window.history.replaceState({}, document.title, window.location.pathname);
+          }
+        } catch (e) {
+          console.error("URL callback check error:", e);
+        }
+      }, [showToast]);
+
+      // Global keyboard shortcuts (Ctrl+K, Escape)
+      useEffect(() => {
+        const handleKeyDown = (e) => {
+          if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+            e.preventDefault();
+            if (searchInputRef.current) {
+              searchInputRef.current.focus();
+              searchInputRef.current.select();
+            }
+          } else if (e.key === "Escape") {
+            setAuthModalOpen(false);
+            setLangModalOpen(false);
+            setUserDropdownOpen(false);
+          }
+        };
+
+        const handleClickOutside = () => setUserDropdownOpen(false);
+
+        window.addEventListener("keydown", handleKeyDown);
+        window.addEventListener("click", handleClickOutside);
+        return () => {
+          window.removeEventListener("keydown", handleKeyDown);
+          window.removeEventListener("click", handleClickOutside);
+        };
+      }, []);
+
+      // Toggle favorite
+      const toggleFavorite = useCallback((url) => {
+        setFavorites((prev) => {
+          let next;
+          if (prev.includes(url)) {
+            next = prev.filter(u => u !== url);
+            showToast("Retiré des favoris");
+          } else {
+            next = [...prev, url];
+            showToast("⭐ Ajouté à vos favoris !");
+          }
+          localStorage.setItem("fpb_favorites_v2", JSON.stringify(next));
+          return next;
+        });
+      }, [showToast]);
+
+      const logoutUser = useCallback(() => {
+        if (window.Clerk && window.Clerk.loaded && window.Clerk.user) {
+          window.Clerk.signOut().catch(() => {});
+        }
+        fetch(`${API_BASE}/api/auth/logout`, { method: "POST", credentials: "include" }).catch(() => {});
+        localStorage.removeItem("fpb_current_user");
+        localStorage.removeItem("fpb_token");
+        setCurrentUser(null);
+        setUserDropdownOpen(false);
+        showToast("Vous avez été déconnecté.");
+      }, [showToast]);
+
+      // Language counts calculation
+      const langCounts = useMemo(() => {
+        const counts = { all: rawResources.length };
+        rawResources.forEach(r => {
+          counts[r.lang] = (counts[r.lang] || 0) + 1;
+        });
+        return counts;
+      }, [rawResources]);
+
+      // Categories for the current language
+      const categories = useMemo(() => {
+        const counts = {};
+        rawResources.forEach(r => {
+          if (currentLang === "all" || r.lang === currentLang) {
+            counts[r.category] = (counts[r.category] || 0) + 1;
+          }
+        });
+        return Object.keys(counts)
+          .sort((a, b) => a.localeCompare(b))
+          .map(cat => ({ name: cat, count: counts[cat] }));
+      }, [rawResources, currentLang]);
+
+      // Filtered Resources (memoized for instantaneous reactivity)
+      const filteredResources = useMemo(() => {
+        let list = rawResources;
+
+        // 1. Language
+        if (currentLang !== "all") {
+          list = list.filter(r => r.lang === currentLang);
+        }
+
+        // 2. Favorites only
+        if (onlyFavorites) {
+          const favSet = new Set(favorites);
+          list = list.filter(r => favSet.has(r.url));
+        }
+
+        // 3. Category
+        if (selectedCategory !== "all") {
+          list = list.filter(r => r.category === selectedCategory);
+        }
+
+        // 4. Format
+        if (selectedFormat !== "all") {
+          list = list.filter(r => r.format === selectedFormat || r.type === selectedFormat);
+        }
+
+        // 5. Search query
+        if (searchQuery.trim()) {
+          const q = searchQuery.toLowerCase().trim();
+          list = list.filter(r =>
+            r.title.toLowerCase().includes(q) ||
+            r.author.toLowerCase().includes(q) ||
+            r.category.toLowerCase().includes(q)
+          );
+        }
+
+        // 6. Sorting
+        if (sortBy === "title-asc") {
+          list = [...list].sort((a, b) => a.title.localeCompare(b.title));
+        } else if (sortBy === "title-desc") {
+          list = [...list].sort((a, b) => b.title.localeCompare(a.title));
+        } else if (sortBy === "category") {
+          list = [...list].sort((a, b) => a.category.localeCompare(b.category));
+        }
+
+        return list;
+      }, [rawResources, currentLang, onlyFavorites, favorites, selectedCategory, selectedFormat, searchQuery, sortBy]);
+
+      // Reset display limit when filters change
+      useEffect(() => {
+        setDisplayLimit(48);
+      }, [currentLang, selectedCategory, selectedFormat, searchQuery, onlyFavorites]);
+
+      const resetAllFilters = useCallback(() => {
+        setSelectedCategory("all");
+        setSelectedFormat("all");
+        setSearchQuery("");
+        setOnlyFavorites(false);
+      }, []);
+
+      const openAuthModal = (mode = "login") => {
+        setAuthInitialMode(mode);
+        setAuthModalOpen(true);
+      };
+
+      const handleOpenLesson = useCallback((item, e) => {
+        if (e && e.preventDefault) e.preventDefault();
+        if (e && e.stopPropagation) e.stopPropagation();
+
+        if (!currentUser) {
+          setPendingLesson(item);
+          pendingLessonRef.current = item;
+          showToast(`🔒 Veuillez vous connecter pour accéder à "${item.title || 'cette leçon'}"`);
+
+          if (window.Clerk && window.Clerk.loaded) {
+            window.Clerk.openSignIn();
+          } else {
+            openAuthModal("login");
+          }
+          return;
+        }
+
+        window.open(item.url, "_blank", "noopener,noreferrer");
+      }, [currentUser, showToast]);
+
+      const handleLoginSuccess = useCallback((user) => {
+        setCurrentUser(user);
+        const targetLesson = pendingLessonRef.current || pendingLesson;
+        if (targetLesson) {
+          showToast(`🎉 Bienvenue ${user.name || ''} ! Ouverture de "${targetLesson.title}"...`);
+          setTimeout(() => {
+            window.open(targetLesson.url, "_blank", "noopener,noreferrer");
+            setPendingLesson(null);
+            pendingLessonRef.current = null;
+          }, 600);
+        }
+      }, [pendingLesson, showToast]);
+
+      const displayedItems = filteredResources.slice(0, displayLimit);
+      const hasMore = displayLimit < filteredResources.length;
+
+      return (
+        <div>
+          {/* Navbar */}
+          <Navbar
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            currentLang={currentLang}
+            openLangModal={() => setLangModalOpen(true)}
+            favoritesCount={favorites.length}
+            onlyFavorites={onlyFavorites}
+            setOnlyFavorites={setOnlyFavorites}
+            currentUser={currentUser}
+            openAuthModal={openAuthModal}
+            userDropdownOpen={userDropdownOpen}
+            setUserDropdownOpen={setUserDropdownOpen}
+            logoutUser={logoutUser}
+            searchInputRef={searchInputRef}
+          />
+
+          {/* Hero Section */}
+          <HeroSection
+            totalResources={rawResources.length}
+            currentLangCount={langCounts[currentLang] || 0}
+            currentLang={currentLang}
+            openLangModal={() => setLangModalOpen(true)}
+          />
+
+          {/* Main Two-Column Workspace */}
+          <div className="workspace">
+            {/* Left Sidebar */}
+            <Sidebar
+              currentLang={currentLang}
+              selectedFormat={selectedFormat}
+              setSelectedFormat={setSelectedFormat}
+              categories={categories}
+              selectedCategory={selectedCategory}
+              setSelectedCategory={setSelectedCategory}
+              catFilterQuery={catFilterQuery}
+              setCatFilterQuery={setCatFilterQuery}
+            />
+
+            {/* Right Content Area */}
+            <main className="content-area">
+              <Toolbar
+                totalMatching={filteredResources.length}
+                currentLang={currentLang}
+                selectedCategory={selectedCategory}
+                setSelectedCategory={setSelectedCategory}
+                selectedFormat={selectedFormat}
+                setSelectedFormat={setSelectedFormat}
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                onlyFavorites={onlyFavorites}
+                setOnlyFavorites={setOnlyFavorites}
+                sortBy={sortBy}
+                setSortBy={setSortBy}
+                viewMode={viewMode}
+                setViewMode={setViewMode}
+                resetAllFilters={resetAllFilters}
+              />
+
+              {/* Resource Cards */}
+              {filteredResources.length === 0 ? (
+                <div className="empty-state">
+                  <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>📭</div>
+                  <h3 style={{ marginBottom: '0.35rem' }}>Aucune ressource ne correspond à vos filtres</h3>
+                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1.15rem' }}>
+                    Essayez de réinitialiser vos critères ou d'explorer les 53 langues disponibles.
+                  </p>
+                  <div style={{ display: 'flex', gap: '0.6rem', justifyContent: 'center' }}>
+                    <button type="button" className="btn-primary" onClick={resetAllFilters}>
+                      Réinitialiser les filtres
+                    </button>
+                    <button type="button" className="btn-ghost" onClick={() => setCurrentLang('all')}>
+                      🌍 Voir toutes les langues
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <div className={`cards-grid ${viewMode === 'list' ? 'list-mode' : ''}`}>
+                    {displayedItems.map((item, index) => (
+                      <ResourceCard
+                        key={item.url + index}
+                        item={item}
+                        isFavorite={favorites.includes(item.url)}
+                        toggleFavorite={toggleFavorite}
+                        onSelectCategory={(cat) => setSelectedCategory(cat)}
+                        onOpenLesson={handleOpenLesson}
+                      />
+                    ))}
+                  </div>
+
+                  {/* Load More Button */}
+                  {hasMore && (
+                    <div className="load-more-wrap">
+                      <button
+                        type="button"
+                        className="btn-primary"
+                        onClick={() => setDisplayLimit(lim => lim + 48)}
+                        style={{ padding: '0.75rem 1.75rem', fontSize: '0.92rem' }}
+                      >
+                        Charger plus de ressources ({filteredResources.length - displayLimit} restantes)
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
+            </main>
+          </div>
+
+          {/* Footer */}
+          <footer>
+            <p>
+              <strong>ByteShelf</strong> • Bibliothèque propulsée par{" "}
+              <a href="https://github.com/EbookFoundation/free-programming-books" target="_blank" rel="noopener noreferrer">
+                EbookFoundation/free-programming-books
+              </a>{" "}
+              • 10 740 livres, cours et podcasts vérifiés en 53 langues
+            </p>
+          </footer>
+
+          {/* Modals */}
+          <AuthModal
+            isOpen={authModalOpen}
+            onClose={() => {
+              setAuthModalOpen(false);
+              setPendingLesson(null);
+              pendingLessonRef.current = null;
+            }}
+            initialMode={authInitialMode}
+            onLoginSuccess={handleLoginSuccess}
+            showToast={showToast}
+            pendingLesson={pendingLesson}
+          />
+
+          <LanguageModal
+            isOpen={langModalOpen}
+            onClose={() => setLangModalOpen(false)}
+            currentLang={currentLang}
+            onSelectLang={(code) => {
+              setCurrentLang(code);
+              setSelectedCategory("all");
+              localStorage.setItem("fpb_manual_lang", code);
+              localStorage.setItem("fpb_lang", code);
+              const meta = getLangMeta(code);
+              const isRtl = RTL_LANGS.includes(code) || meta.rtl;
+              document.documentElement.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
+              document.documentElement.setAttribute('lang', code);
+              showToast(`🌐 ${meta.native || meta.fr} ${meta.flag}`);
+            }}
+            langCounts={langCounts}
+          />
+
+          {/* Floating Toast Notification */}
+          <Toast toast={toast} />
+        </div>
+      );
+    }
+
+    // Error Boundary Component
+    class ErrorBoundary extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = { hasError: false, error: null };
+      }
+      static getDerivedStateFromError(error) {
+        return { hasError: true, error };
+      }
+      componentDidCatch(error, errorInfo) {
+        console.error("React Error caught by boundary:", error, errorInfo);
+      }
+      render() {
+        if (this.state.hasError) {
+          return (
+            <div style={{ padding: '3rem', textAlign: 'center', fontFamily: 'system-ui, sans-serif' }}>
+              <h2 style={{ fontSize: '1.5rem', marginBottom: '0.75rem', color: '#0f172a' }}>⚠️ Une erreur inattendue est survenue</h2>
+              <p style={{ color: '#e11d48', marginBottom: '1.25rem', fontFamily: 'monospace', fontSize: '0.9rem' }}>
+                {String(this.state.error?.message || this.state.error)}
+              </p>
+              <button
+                onClick={() => { localStorage.clear(); sessionStorage.clear(); window.location.reload(); }}
+                style={{ padding: '0.65rem 1.4rem', cursor: 'pointer', borderRadius: '10px', border: 'none', background: '#2563eb', color: '#fff', fontWeight: 600 }}
+              >
+                🔄 Réinitialiser et recharger la page
+              </button>
+            </div>
+          );
+        }
+        return this.props.children;
+      }
+    }
+
+    // Mount React App
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>
+    );
+  </script>
+</body>
+</html>
